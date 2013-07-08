@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Net;
+using System.IO;
+using System.Xml;
 
 namespace EDIPostService.ServiceConnection
 {
@@ -53,6 +56,51 @@ namespace EDIPostService.ServiceConnection
             apikey = api_key;
         }
 
-       
+
+
+        public XmlDocument http_get(string url, string data = "", string headers = "")
+        {
+            return _getRequest(url, headers, data);
+        }
+
+
+
+
+        private XmlDocument _getRequest(string url, string headers = "", string data = "")
+        {
+            XmlDocument xml = new XmlDocument();
+
+            String xml_string = "";
+            String encoded = System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes("api:" + this.apikey));
+
+            url = this.baseurl + url;
+            
+            try
+            {
+                
+                HttpWebRequest req = WebRequest.Create(url) as HttpWebRequest;
+                req.Headers.Add("Authorization", "Basic " + encoded);
+
+
+                
+                using (HttpWebResponse resp = req.GetResponse() as HttpWebResponse)
+                {
+                    StreamReader reader = new StreamReader(resp.GetResponseStream());
+                    xml_string = reader.ReadToEnd();
+                    xml.LoadXml(xml_string);
+                }
+
+            }
+            catch (WebException e)
+            {
+                throw (e);
+            }
+
+
+            return xml;
+            
+        }
+
+        
     }
 }

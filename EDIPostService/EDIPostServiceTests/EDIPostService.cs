@@ -7,7 +7,7 @@ using Xunit;
 
 namespace EDIPostServiceTests
 {
-    public class Class1
+    public class EDIPostService
     {
         [Fact]
         public void Test1()

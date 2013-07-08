@@ -6,7 +6,12 @@ using System.Threading.Tasks;
 
 namespace EDIPostService
 {
-    public class Class1
+    interface iEDIPostService
     {
+
+        void getDefaultConsignor();
+
+        
+
     }
 }
