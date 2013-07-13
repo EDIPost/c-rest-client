@@ -43,15 +43,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Client\Address.cs" />
+    <Compile Include="Client\Builder\ConsigneeBuilder.cs" />
     <Compile Include="Client\Builder\ConsignorBuilder.cs" />
     <Compile Include="Client\Builder\PartyBuilder.cs" />
+    <Compile Include="Client\Consignee.cs" />
     <Compile Include="Client\Consignor.cs" />
     <Compile Include="Client\Contact.cs" />
+    <Compile Include="Client\Exceptions\DataException.cs" />
     <Compile Include="Client\Party.cs" />
     <Compile Include="EDIPostService.cs" />
-    <Compile Include="Interface1.cs" />
+    <Compile Include="iEDIPostService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ServiceConnection\Exceptions\ConnectionException.cs" />
     <Compile Include="ServiceConnection\ServiceConnection.cs" />
+    <Compile Include="Tools\xml.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

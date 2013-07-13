@@ -12,7 +12,7 @@ namespace EDIPostServiceTests.Client.Builder
     public class PartyBuilderTest
     {
         [Fact]
-        public void PartyBuilderTest1()
+        public void PartyBuilderTest_test_getsets()
         {
             PartyBuilder pb = new PartyBuilder();
             pb.id = 1;
@@ -38,7 +38,35 @@ namespace EDIPostServiceTests.Client.Builder
         }
 
         [Fact]
-        public void ConsignorBuilderTest1()
+        public void ConsignorBuilderTest_return_consignor()
+        {
+            ConsignorBuilder b = ConsignorBuilder(); 
+            Consignor c = b.build();
+
+            Assert.IsType<Consignor>(c);
+        }
+
+        [Fact]
+        public void ConsignorBuilderTest_correct_id()
+        {
+            ConsignorBuilder b = ConsignorBuilder();
+            Consignor c = b.build();
+
+            Assert.Equal(1, c.id);
+        }
+
+        [Fact]
+        public void ConsignorBuilderTest_correct_parent_type()
+        {
+            ConsignorBuilder b = ConsignorBuilder();
+            Consignor c = b.build();
+
+            Assert.IsAssignableFrom<Party>(c);
+        }
+
+
+
+        private ConsignorBuilder ConsignorBuilder()
         {
             ConsignorBuilder b = new ConsignorBuilder();
             b.id = 1;
@@ -56,10 +84,7 @@ namespace EDIPostServiceTests.Client.Builder
             b.contactEmail = "ContactEmail";
             b.contactCellphone = "ContactCellphone";
 
-            Consignor c = b.build();
-
-            Assert.False(true);
-            
+            return b;
         }
     }
 }

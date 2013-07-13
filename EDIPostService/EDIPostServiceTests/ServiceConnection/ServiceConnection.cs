@@ -14,15 +14,15 @@ namespace EDIPostServiceTests.ServiceConnection
         [Fact]
         public void ConstructorTest()
         {
-            EPService.ServiceConnection sc = new EPService.ServiceConnection("http://api.edipost.no", "12312-1231321-12312312");
+            EPService.ServiceConnection sc = new EPService.ServiceConnection("http://apitest.edipost.no", "12312-1231321-12312312");
 
-            Assert.Equal("http://api.edipost.no", sc.baseurl);
+            Assert.Equal("http://apitest.edipost.no", sc.baseurl);
         }
 
         [Fact]
         public void ConstructorTest2()
         {
-            EPService.ServiceConnection sc = new EPService.ServiceConnection("http://api.edipost.no", "12312-1231321-12312312");
+            EPService.ServiceConnection sc = new EPService.ServiceConnection("http://apitest.edipost.no", "12312-1231321-12312312");
 
             Assert.Equal("12312-1231321-12312312", sc.apikey);
         }
@@ -32,7 +32,7 @@ namespace EDIPostServiceTests.ServiceConnection
         {
             XmlDocument result;
 
-            EPService.ServiceConnection sc = new EPService.ServiceConnection("http://api.edipost.no", "bfa6b907ab69a8bdc2a3661cb6b20d7464bed04b");
+            EPService.ServiceConnection sc = new EPService.ServiceConnection("http://apitest.edipost.no", "bfa6b907ab69a8bdc2a3661cb6b20d7464bed04b");
             result = sc.http_get("/");
             XmlNodeList xlist = result.SelectNodes("/collection/links");
 

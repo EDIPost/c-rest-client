@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace EDIPostService.Client.Builder
 {
-    public class ConsignorBuilder : PartyBuilder
+    public class ConsigneeBuilder : PartyBuilder
     {
 
-        public Consignor build()
+        public Consignee build()
         {
-            Consignor c = new Consignor();
+            Consignee c = new Consignee();
             c.id = id;
             c.companyName = companyName;
             c.customerNumber = customerNumber;

@@ -16,7 +16,7 @@ namespace EDIPostService.Client.Builder
             set { _id = value; }
         }
 
-        private String _companyName;
+        private String _companyName = "";
 
         public String companyName
         {
@@ -25,7 +25,7 @@ namespace EDIPostService.Client.Builder
         }
 
 
-        private String _customerNumber;
+        private String _customerNumber = "";
 
         public String customerNumber
         {
@@ -34,7 +34,7 @@ namespace EDIPostService.Client.Builder
         }
 
 
-        private String _streetAddress;
+        private String _streetAddress = "";
 
         public String streetAddress
         {
@@ -42,7 +42,7 @@ namespace EDIPostService.Client.Builder
             set { _streetAddress = value; }
         }
 
-        private String _streetZip;
+        private String _streetZip = "";
 
         public String streetZip
         {
@@ -51,7 +51,7 @@ namespace EDIPostService.Client.Builder
         }
 
 
-        private String _streetCity;
+        private String _streetCity = "";
 
         public String streetCity
         {
@@ -59,7 +59,7 @@ namespace EDIPostService.Client.Builder
             set { _streetCity = value; }
         }
 
-        private String _postAddress;
+        private String _postAddress = "";
 
         public String postAddress
         {
@@ -67,7 +67,7 @@ namespace EDIPostService.Client.Builder
             set { _postAddress = value; }
         }
 
-        private String _postZip;
+        private String _postZip = "";
 
         public String postZip
         {
@@ -75,7 +75,7 @@ namespace EDIPostService.Client.Builder
             set { _postZip = value; }
         }
 
-        private String _postCity;
+        private String _postCity = "";
 
         public String postCity
         {
@@ -83,7 +83,7 @@ namespace EDIPostService.Client.Builder
             set { _postCity = value; }
         }
 
-        private String _country ;
+        private String _country = "";
 
         public String country
         {
@@ -91,7 +91,7 @@ namespace EDIPostService.Client.Builder
             set { _country = value; }
         }
 
-        private String _contactName;
+        private String _contactName = "";
 
         public String contactName
         {
@@ -99,7 +99,7 @@ namespace EDIPostService.Client.Builder
             set { _contactName = value; }
         }
 
-        private String _contactPhone;
+        private String _contactPhone = "";
 
         public String contactPhone
         {
@@ -107,7 +107,7 @@ namespace EDIPostService.Client.Builder
             set { _contactPhone = value; }
         }
 
-        private String _contactCellphone;
+        private String _contactCellphone = "";
 
         public String contactCellphone
         {
@@ -115,7 +115,7 @@ namespace EDIPostService.Client.Builder
             set { _contactCellphone = value; }
         }
 
-        private String _contactEmail;
+        private String _contactEmail = "";
 
         public String contactEmail
         {
