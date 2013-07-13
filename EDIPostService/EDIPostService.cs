@@ -85,7 +85,11 @@ namespace EDIPostService
 
         }
 
-        
+
+
+
+
+        #region Private methods
 
         /// <summary>
         /// Builds a Consignor object based on xml
@@ -144,8 +148,8 @@ namespace EDIPostService
 
 
 
+        # endregion
 
-        
-        
+
     }
 }
