@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
-//using System.Xml.Serialization;
+using Antlr4.StringTemplate;
 using EPService = EDIPostService.ServiceConnection;
 using EPTools = EDIPostService.Tools;
 
@@ -17,7 +17,11 @@ using EPTools = EDIPostService.Tools;
 namespace EDIPostService
 {
     enum PARTY : int { consignor=1, consignee=2, payer=7 };
+    
 
+    /// <summary>
+    /// Api to connect to EDIPost
+    /// </summary>
     public class EDIPostService : iEDIPostService
     {
 
@@ -52,11 +56,34 @@ namespace EDIPostService
         }
 
 
-
+        /// <summary>
+        /// Fetches all available products
+        /// </summary>
+        /// <param name="c"></param>
+        /// <returns></returns>
         public List<Product> findProducts(Consignment c)
         {
+            Template path = new Template("/consignee/<consigneeId>/products?<items>");
+            XmlDocument data = null;
+            string accept = "application/vnd.edipost.collection+xml";
+            string contenttype = null;
+            List<String> headers = new List<string>();
+            
+            path.Add("consigneeId", c.consignee.id);
+            path.Add("items", "");
 
+            string url = path.Render();
+
+            XmlDocument xml = sc.http_get(url, data, headers, accept, contenttype);
+
+
+            List<Product> products = _buildProduct(xml);
+
+
+            return products;
         }
+
+        
 
         
         
@@ -93,10 +120,29 @@ namespace EDIPostService
         }
 
 
-
+        
 
 
         #region Private methods
+
+        private List<Product> _buildProduct(XmlDocument xml)
+        {
+            List<Product> products = new List<Product>();
+            XmlNodeList nl = xml.SelectNodes("//collection/entry");
+
+            foreach (XmlNode n in nl)
+            {
+                ProductBuilder pb = new ProductBuilder();
+                pb.id = Convert.ToInt32( EPTools.xml.nodeValue(n, "@id", true) );
+                pb.name = EPTools.xml.nodeValue(n, "@name");
+                pb.transportername = EPTools.xml.nodeValue(n, "transporter/@name");
+
+                products.Add(pb.build());
+            }
+
+            return products;
+
+        }
 
         /// <summary>
         /// Builds a Consignor object based on xml

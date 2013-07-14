@@ -42,6 +42,24 @@ namespace EDIPostService.Tools
             return xml;
         }
 
-        
+        public static string nodeValue(XmlNode n, string xpath, bool numeric = false )
+        {
+            string retvalue = "";
+            int i = 0;
+            
+            if ( n.SelectSingleNode(xpath) != null ){
+                if ( n.SelectSingleNode(xpath).Value != null ){
+                    retvalue = n.SelectSingleNode(xpath).Value;
+                }else{
+                    retvalue = n.SelectSingleNode(xpath).InnerText;
+                }
+            }
+
+            if (numeric && !int.TryParse(retvalue, out i))
+            {
+                retvalue = "0";
+            }
+            return retvalue;
+        }
     }
 }

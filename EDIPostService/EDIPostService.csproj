@@ -20,6 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\EDIPostService.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -30,6 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Antlr4.StringTemplate">
+      <HintPath>packages\Antlr4.StringTemplate.4.0.6.9004\lib\net35\Antlr4.StringTemplate.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Net" />
@@ -46,6 +50,13 @@
     <Compile Include="Client\Builder\ConsigneeBuilder.cs" />
     <Compile Include="Client\Builder\ConsignmentBuilder.cs" />
     <Compile Include="Client\Builder\ConsignorBuilder.cs" />
+    <Compile Include="Client\Builder\ProductBuilder.cs" />
+    <Compile Include="Client\Transporter.cs" />
+    <Compile Include="Client\Consignment.cs" />
+    <Compile Include="Client\Items.cs" />
+    <Compile Include="Client\Product.cs" />
+    <Compile Include="Client\Services.cs" />
+    <Compile Include="Client\Service.cs" />
     <Compile Include="Client\Item.cs" />
     <Compile Include="Client\Builder\PartyBuilder.cs" />
     <Compile Include="Client\Consignee.cs" />
@@ -60,7 +71,9 @@
     <Compile Include="ServiceConnection\ServiceConnection.cs" />
     <Compile Include="Tools\xml.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
