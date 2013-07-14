@@ -51,6 +51,13 @@ namespace EDIPostService
             return _buildConsignor(xml);
         }
 
+
+
+        public List<Product> findProducts(Consignment c)
+        {
+
+        }
+
         
         
         /// <summary>
@@ -66,7 +73,7 @@ namespace EDIPostService
             string contenttype = "application/vnd.edipost.party+xml";
             
             XmlDocument data = EPTools.xml.format<Consignee>(consignee, true);
-            
+                    
             try
             {
                 xml = sc.http_post(path, data, null, accept, contenttype);
@@ -80,7 +87,7 @@ namespace EDIPostService
             {
                 throw ce;
             }
-
+             
             return _buildConsignee(xml);
 
         }

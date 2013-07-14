@@ -44,7 +44,9 @@
   <ItemGroup>
     <Compile Include="Client\Address.cs" />
     <Compile Include="Client\Builder\ConsigneeBuilder.cs" />
+    <Compile Include="Client\Builder\ConsignmentBuilder.cs" />
     <Compile Include="Client\Builder\ConsignorBuilder.cs" />
+    <Compile Include="Client\Item.cs" />
     <Compile Include="Client\Builder\PartyBuilder.cs" />
     <Compile Include="Client\Consignee.cs" />
     <Compile Include="Client\Consignor.cs" />
