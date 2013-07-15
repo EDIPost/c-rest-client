@@ -72,13 +72,15 @@ namespace EDIPostService
             path.Add("consigneeId", c.consignee.id);
             path.Add("items", "");
 
+            
+
             string url = path.Render();
 
             XmlDocument xml = sc.http_get(url, data, headers, accept, contenttype);
 
-
             List<Product> products = _buildProduct(xml);
 
+            
 
             return products;
         }
@@ -125,7 +127,7 @@ namespace EDIPostService
 
         #region Private methods
 
-        private List<Product> _buildProduct(XmlDocument xml)
+        protected List<Product> _buildProduct(XmlDocument xml)
         {
             List<Product> products = new List<Product>();
             XmlNodeList nl = xml.SelectNodes("//collection/entry");
@@ -136,6 +138,16 @@ namespace EDIPostService
                 pb.id = Convert.ToInt32( EPTools.xml.nodeValue(n, "@id", true) );
                 pb.name = EPTools.xml.nodeValue(n, "@name");
                 pb.transportername = EPTools.xml.nodeValue(n, "transporter/@name");
+
+                XmlNodeList service_list = n.SelectNodes("services/service");
+                foreach (XmlNode service in service_list)
+                {
+                    Service s = new Service();
+                    s.id = Convert.ToInt32(EPTools.xml.nodeValue(service, "@id", true));
+                    s.name = EPTools.xml.nodeValue(service, "@name");
+
+                    pb.addService(s);
+                }
 
                 products.Add(pb.build());
             }

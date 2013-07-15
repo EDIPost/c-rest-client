@@ -50,6 +50,7 @@ namespace EDIPostService.Client.Builder
             t.name = this.transportername;
 
             p.transporter = t;
+            p.services = this.services;
 
             return p;
         }

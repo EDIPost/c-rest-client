@@ -14,5 +14,7 @@ namespace EDIPostService.Client
         public string status { get; set; }
 
         public Transporter transporter { get; set; }
+
+        public Services services { get; set; }
     }
 }

@@ -9,6 +9,7 @@ using EPService = EDIPostService;
 using EPClient = EDIPostService.Client;
 using EPBuilder = EDIPostService.Client.Builder;
 using System.Net;
+using EDIPostService.Client;
 
 
 namespace EDIPostServiceTests
@@ -54,7 +55,7 @@ namespace EDIPostServiceTests
         }
 
 
-        [Fact]
+        
         public void findProductTest_domestic()
         {
             EPService.EDIPostService ep = new EPService.EDIPostService("cc1b9a01af40d50ea6776d449f8afe9707c77750", "http://apitest.edipost.no/");
@@ -69,15 +70,16 @@ namespace EDIPostServiceTests
             cb.consignorID = consignor.id;
             cb.addItem(new EPClient.Item(10, 20, 30, 40));
             cb.addItem(new EPClient.Item(2.5, 25, 35, 45));
-
+            
             EPClient.Consignment c = cb.build();
+            
+            List<EPClient.Product> products = ep.findProducts(c);
 
-            List<EPClient.Product> product = ep.findProducts(c);
-
-            Assert.False(true);
+            Assert.True(products.Count > 0);
         }
 
 
+       
 
         private EPClient.Consignee _getTestConsignee(int id = 0)
         {
