@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
 using System.Net;
+using System.Globalization;
 
 namespace EDIPostService.Tools
 {
@@ -66,7 +67,8 @@ namespace EDIPostService.Tools
         {
             string retvalue = "";
             int i = 0;
-            
+            decimal y;
+
             if ( n.SelectSingleNode(xpath) != null ){
                 if ( n.SelectSingleNode(xpath).Value != null ){
                     retvalue = n.SelectSingleNode(xpath).Value;
@@ -75,10 +77,12 @@ namespace EDIPostService.Tools
                 }
             }
 
-            if (numeric && !int.TryParse(retvalue, out i))
+            if (numeric && !int.TryParse(retvalue, out i) && (!decimal.TryParse(retvalue.Replace(",", "").Replace(".", ""), NumberStyles.Number, CultureInfo.InvariantCulture, out y)))
             {
                 retvalue = "0";
             }
+
+            
             return retvalue;
         }
     }

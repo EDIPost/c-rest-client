@@ -15,6 +15,12 @@ namespace EDIPostService.Client
 
         [XmlElement("name")]
         public string name { get; set; }
+
+        [XmlIgnore]
+        public double cost { get; set; }
+
+        [XmlIgnore]
+        public double vat{ get; set; }
         # endregion
     }
 }

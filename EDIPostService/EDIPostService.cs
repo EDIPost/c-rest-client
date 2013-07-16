@@ -11,6 +11,7 @@ using System.Xml;
 using Antlr4.StringTemplate;
 using EPService = EDIPostService.ServiceConnection;
 using EPTools = EDIPostService.Tools;
+using System.Globalization;
 
 
 
@@ -133,8 +134,9 @@ namespace EDIPostService
                 throw ce;
             }
 
+            Consignment c = this._buildConsignment(xml);
 
-            return new Consignment();
+            return c;
         }
         
         
@@ -228,6 +230,110 @@ namespace EDIPostService
 
         #region Private methods
 
+        /// <summary>
+        /// Builds a Consignment based on XML and with the help of ConsignmentBuilder
+        /// </summary>
+        /// <param name="xml">The XmlDocument containing the consignment</param>
+        /// <returns>The consignment</returns>
+        protected Consignment _buildConsignment(XmlDocument xml)
+        {
+            Consignment c = new Consignment();
+            Consignor consignor = new Consignor();
+            Consignee consignee = new Consignee();
+
+
+            // ConsignmentDetails
+            if (xml.SelectSingleNode("/consignment/@id") != null)
+            {
+                c.id = Convert.ToInt32(EPTools.xml.nodeValue(xml, "/consignment/@id", true));
+            }
+            c.shipmentNumber = EPTools.xml.nodeValue(xml, "/consignment/shipmentNumber");
+            c.contentReference = EPTools.xml.nodeValue(xml, "/consignment/contentReference");
+            c.transportInstructions = EPTools.xml.nodeValue(xml, "/consignment/transportInstructions");
+            c.internalReference = EPTools.xml.nodeValue(xml, "/consignment/internalReference");
+
+            // Consignor
+            c.consignor = this._buildConsignor(xml);
+
+            // Consignee
+            c.consignee = this._buildConsignee(xml);
+
+            // Product
+            c.product = this._buildProduct(xml, true);
+
+            // Items
+            c.items = new Items();
+            XmlNodeList item_list = xml.SelectNodes("/consignment/items/item");
+            foreach (XmlNode item in item_list)
+            {
+                Item i = new Item();
+
+                // Add the itemNumber if exists
+                if (item.SelectSingleNode("itemNumber") != null)
+                {
+                    i.itemNumber = EPTools.xml.nodeValue(item, "itemNumber");
+                }
+
+                // Add the cost as double if exists
+                if (item.SelectSingleNode("cost") != null)
+                {
+                    i.cost = Convert.ToDouble(EPTools.xml.nodeValue(item, "cost", true), CultureInfo.InvariantCulture);
+                }
+                
+                // Add Vat as double if exists
+                if (item.SelectSingleNode("vat") != null)
+                {
+                    i.vat = Convert.ToDouble(EPTools.xml.nodeValue(item, "vat", true), CultureInfo.InvariantCulture);
+                }
+
+
+                i.weight = Convert.ToDouble(EPTools.xml.nodeValue(item, "weight", true), CultureInfo.InvariantCulture);
+                i.width = Convert.ToDouble(EPTools.xml.nodeValue(item, "width", true), CultureInfo.InvariantCulture);
+                i.length = Convert.ToDouble(EPTools.xml.nodeValue(item, "length", true), CultureInfo.InvariantCulture);
+                i.height = Convert.ToDouble(EPTools.xml.nodeValue(item, "height", true), CultureInfo.InvariantCulture);
+                
+                c.items.Add(i);
+            }
+
+            return c;
+        }
+        
+
+        /// <summary>
+        /// Builds a single object based on any XML containing a Product tag.
+        /// </summary>
+        /// <param name="xml">The XML to parse</param>
+        /// <param name="single">to tell that it is a single product</param>
+        /// <returns>Product object</returns>
+        protected Product _buildProduct(XmlDocument xml, bool single)
+        {
+            ProductBuilder pb = new ProductBuilder();
+            pb.id = Convert.ToInt32(EPTools.xml.nodeValue(xml, "*/product/@id", true));
+            pb.name = EPTools.xml.nodeValue(xml, "*/product/@name");
+            pb.transportername = EPTools.xml.nodeValue(xml, "*/product/transporter/@name");
+            pb.status = EPTools.xml.nodeValue(xml, "*/product/transporter/status");
+
+            XmlNodeList service_list = xml.SelectNodes("*/product/services/service");
+            foreach (XmlNode service in service_list)
+            {
+                Service s = new Service();
+                s.id = Convert.ToInt32(EPTools.xml.nodeValue(service, "@id", true));
+                s.name = EPTools.xml.nodeValue(service, "@name");
+                if (service.SelectSingleNode("cost") != null)
+                {
+                    s.cost = Convert.ToDouble(EPTools.xml.nodeValue(service, "cost", true));
+                }
+                if (service.SelectSingleNode("vat") != null)
+                {
+                    s.vat = Convert.ToDouble(EPTools.xml.nodeValue(service, "vat", true));
+                }
+
+                pb.addService(s);
+            }
+
+            return pb.build();
+        }
+
         protected List<Product> _buildProduct(XmlDocument xml)
         {
             List<Product> products = new List<Product>();
@@ -265,20 +371,20 @@ namespace EDIPostService
         private Consignor _buildConsignor(XmlDocument xml)
         {
             ConsignorBuilder cb = new ConsignorBuilder();
-            cb.id = Convert.ToInt32(xml.SelectSingleNode("/consignor/@id").Value);
-            cb.companyName = ( xml.SelectSingleNode("/consignor/companyName") != null ? xml.SelectSingleNode("/consignor/companyName").InnerText : "");
-            cb.customerNumber = ( xml.SelectSingleNode("/consignor/customerNumber") != null ? xml.SelectSingleNode("/consignor/customerNumber").InnerText : "" );
-            cb.postAddress = ( xml.SelectSingleNode("/consignor/postAddress/address") != null ? xml.SelectSingleNode("/consignor/postAddress/address").InnerText : "" );
-            cb.postZip = ( xml.SelectSingleNode("/consignor/postAddress/zipCode") != null ? xml.SelectSingleNode("/consignor/postAddress/zipCode").InnerText : "" );
-            cb.postCity = ( xml.SelectSingleNode("/consignor/postAddress/city") != null ? xml.SelectSingleNode("/consignor/postAddress/city").InnerText : "" );
-            cb.streetAddress = ( xml.SelectSingleNode("/consignor/streetAddress/address") != null ? xml.SelectSingleNode("/consignor/streetAddress/address").InnerText : "");
-            cb.streetZip = ( xml.SelectSingleNode("/consignor/streetAddress/zipCode") != null ? xml.SelectSingleNode("/consignor/streetAddress/zipCode").InnerText : "");
-            cb.streetCity = ( xml.SelectSingleNode("/consignor/streetAddress/city") != null ? xml.SelectSingleNode("/consignor/streetAddress/city").InnerText : "" );
-            cb.contactName = ( xml.SelectSingleNode("/consignor/contact/name") != null ? xml.SelectSingleNode("/consignor/contact/name").InnerText : "" );
-            cb.contactEmail = ( xml.SelectSingleNode("/consignor/contact/email") != null ? xml.SelectSingleNode("/consignor/contact/email").InnerText : "");
-            cb.contactPhone = ( xml.SelectSingleNode("/consignor/contact/telephone") != null ? xml.SelectSingleNode("/consignor/contact/telephone").InnerText : "");
-            cb.contactCellphone = ( xml.SelectSingleNode("/consignor/contact/cellphone") != null ? xml.SelectSingleNode("/consignor/contact/cellphone").InnerText : "" );
-            cb.country = xml.SelectSingleNode("/consignor/country").InnerText;
+            cb.id = Convert.ToInt32(xml.SelectSingleNode("//consignor/@id").Value);
+            cb.companyName = ( xml.SelectSingleNode("//consignor/companyName") != null ? xml.SelectSingleNode("//consignor/companyName").InnerText : "");
+            cb.customerNumber = ( xml.SelectSingleNode("//consignor/customerNumber") != null ? xml.SelectSingleNode("//consignor/customerNumber").InnerText : "" );
+            cb.postAddress = ( xml.SelectSingleNode("//consignor/postAddress/address") != null ? xml.SelectSingleNode("//consignor/postAddress/address").InnerText : "" );
+            cb.postZip = ( xml.SelectSingleNode("//consignor/postAddress/zipCode") != null ? xml.SelectSingleNode("//consignor/postAddress/zipCode").InnerText : "" );
+            cb.postCity = ( xml.SelectSingleNode("//consignor/postAddress/city") != null ? xml.SelectSingleNode("//consignor/postAddress/city").InnerText : "" );
+            cb.streetAddress = ( xml.SelectSingleNode("//consignor/streetAddress/address") != null ? xml.SelectSingleNode("//consignor/streetAddress/address").InnerText : "");
+            cb.streetZip = ( xml.SelectSingleNode("//consignor/streetAddress/zipCode") != null ? xml.SelectSingleNode("//consignor/streetAddress/zipCode").InnerText : "");
+            cb.streetCity = ( xml.SelectSingleNode("//consignor/streetAddress/city") != null ? xml.SelectSingleNode("//consignor/streetAddress/city").InnerText : "" );
+            cb.contactName = ( xml.SelectSingleNode("//consignor/contact/name") != null ? xml.SelectSingleNode("//consignor/contact/name").InnerText : "" );
+            cb.contactEmail = ( xml.SelectSingleNode("//consignor/contact/email") != null ? xml.SelectSingleNode("//consignor/contact/email").InnerText : "");
+            cb.contactPhone = ( xml.SelectSingleNode("//consignor/contact/telephone") != null ? xml.SelectSingleNode("//consignor/contact/telephone").InnerText : "");
+            cb.contactCellphone = ( xml.SelectSingleNode("//consignor/contact/cellphone") != null ? xml.SelectSingleNode("//consignor/contact/cellphone").InnerText : "" );
+            cb.country = xml.SelectSingleNode("//consignor/country").InnerText;
 
             return cb.build();
 
@@ -294,20 +400,20 @@ namespace EDIPostService
         private Consignee _buildConsignee(XmlDocument xml)
         {
             ConsigneeBuilder cb = new ConsigneeBuilder();
-            cb.id = Convert.ToInt32(xml.SelectSingleNode("/consignee/@id").Value);
-            cb.companyName = (xml.SelectSingleNode("/consignee/companyName") != null ? xml.SelectSingleNode("/consignee/companyName").InnerText : "");
-            cb.customerNumber = (xml.SelectSingleNode("/consignee/customerNumber") != null ? xml.SelectSingleNode("/consignee/customerNumber").InnerText : "");
-            cb.postAddress = (xml.SelectSingleNode("/consignee/postAddress/address") != null ? xml.SelectSingleNode("/consignee/postAddress/address").InnerText : "");
-            cb.postZip = (xml.SelectSingleNode("/consignee/postAddress/zipCode") != null ? xml.SelectSingleNode("/consignee/postAddress/zipCode").InnerText : "");
-            cb.postCity = (xml.SelectSingleNode("/consignee/postAddress/city") != null ? xml.SelectSingleNode("/consignee/postAddress/city").InnerText : "");
-            cb.streetAddress = (xml.SelectSingleNode("/consignee/streetAddress/address") != null ? xml.SelectSingleNode("/consignee/streetAddress/address").InnerText : "");
-            cb.streetZip = (xml.SelectSingleNode("/consignee/streetAddress/zipCode") != null ? xml.SelectSingleNode("/consignee/streetAddress/zipCode").InnerText : "");
-            cb.streetCity = (xml.SelectSingleNode("/consignee/streetAddress/city") != null ? xml.SelectSingleNode("/consignee/streetAddress/city").InnerText : "");
-            cb.contactName = (xml.SelectSingleNode("/consignee/contact/name") != null ? xml.SelectSingleNode("/consignee/contact/name").InnerText : "");
-            cb.contactEmail = (xml.SelectSingleNode("/consignee/contact/email") != null ? xml.SelectSingleNode("/consignee/contact/email").InnerText : "");
-            cb.contactPhone = (xml.SelectSingleNode("/consignee/contact/telephone") != null ? xml.SelectSingleNode("/consignee/contact/telephone").InnerText : "");
-            cb.contactCellphone = (xml.SelectSingleNode("/consignee/contact/cellphone") != null ? xml.SelectSingleNode("/consignee/contact/cellphone").InnerText : "");
-            cb.country = xml.SelectSingleNode("/consignee/country").InnerText;
+            cb.id = Convert.ToInt32(xml.SelectSingleNode("//consignee/@id").Value);
+            cb.companyName = (xml.SelectSingleNode("//consignee/companyName") != null ? xml.SelectSingleNode("//consignee/companyName").InnerText : "");
+            cb.customerNumber = (xml.SelectSingleNode("//consignee/customerNumber") != null ? xml.SelectSingleNode("//consignee/customerNumber").InnerText : "");
+            cb.postAddress = (xml.SelectSingleNode("//consignee/postAddress/address") != null ? xml.SelectSingleNode("//consignee/postAddress/address").InnerText : "");
+            cb.postZip = (xml.SelectSingleNode("//consignee/postAddress/zipCode") != null ? xml.SelectSingleNode("//consignee/postAddress/zipCode").InnerText : "");
+            cb.postCity = (xml.SelectSingleNode("//consignee/postAddress/city") != null ? xml.SelectSingleNode("//consignee/postAddress/city").InnerText : "");
+            cb.streetAddress = (xml.SelectSingleNode("//consignee/streetAddress/address") != null ? xml.SelectSingleNode("//consignee/streetAddress/address").InnerText : "");
+            cb.streetZip = (xml.SelectSingleNode("//consignee/streetAddress/zipCode") != null ? xml.SelectSingleNode("//consignee/streetAddress/zipCode").InnerText : "");
+            cb.streetCity = (xml.SelectSingleNode("//consignee/streetAddress/city") != null ? xml.SelectSingleNode("//consignee/streetAddress/city").InnerText : "");
+            cb.contactName = (xml.SelectSingleNode("//consignee/contact/name") != null ? xml.SelectSingleNode("//consignee/contact/name").InnerText : "");
+            cb.contactEmail = (xml.SelectSingleNode("//consignee/contact/email") != null ? xml.SelectSingleNode("//consignee/contact/email").InnerText : "");
+            cb.contactPhone = (xml.SelectSingleNode("//consignee/contact/telephone") != null ? xml.SelectSingleNode("//consignee/contact/telephone").InnerText : "");
+            cb.contactCellphone = (xml.SelectSingleNode("//consignee/contact/cellphone") != null ? xml.SelectSingleNode("//consignee/contact/cellphone").InnerText : "");
+            cb.country = xml.SelectSingleNode("//consignee/country").InnerText;
 
             return cb.build();
         }
@@ -317,5 +423,7 @@ namespace EDIPostService
         # endregion
 
 
+
+        public IFormatProvider InvariantCulture { get; set; }
     }
 }

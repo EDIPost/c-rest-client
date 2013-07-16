@@ -46,6 +46,9 @@ namespace EDIPostService.Client
         [XmlElement("internalReference")]
         public string internalReference { get; set; }
 
+        [XmlIgnore]
+        public string shipmentNumber { get; set; }
+
 
         public Consignment()
         {

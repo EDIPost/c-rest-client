@@ -88,9 +88,9 @@ namespace EDIPostService.Client.Builder
             // Items
             c.items = this.items ?? new Items();
 
-            c.contentReference = this.contentReference ?? " ";
-            c.transportInstructions = this.transportInstructions ?? " ";
-            c.internalReference = this.internalReference ?? " ";
+            c.contentReference = this.contentReference ?? "&nbsp;";
+            c.transportInstructions = this.transportInstructions ?? "&nbsp;";
+            c.internalReference = this.internalReference ?? "&nbsp;";
 
             return c;
         }

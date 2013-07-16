@@ -199,19 +199,16 @@ namespace EDIPostService.ServiceConnection
 
                     string data_string = "";
 
-                    // Settings to make sure we get no shorthand tags. e.g <tag />
-                    var settings = new XmlWriterSettings();
-                    var propInfo = settings.GetType().GetProperty("OutputMethod");
-                    propInfo.SetValue(settings, XmlOutputMethod.Xml, null);
-
                     using (var stringWriter = new StringWriter())
-                    using (var xmlTextWriter = XmlWriter.Create(stringWriter, settings))
+                    using (var xmlTextWriter = XmlWriter.Create(stringWriter))
                     {
                         data.WriteTo(xmlTextWriter);
                         xmlTextWriter.Flush();
                         data_string = stringWriter.GetStringBuilder().ToString();
                     }
 
+                    // Workaround to make sure we dont loose empty elements to shorthand structure
+                    data_string = data_string.Replace("&amp;nbsp;", " ");
 
 
                     MemoryStream sw = new MemoryStream();
