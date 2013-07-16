@@ -55,7 +55,7 @@ namespace EDIPostServiceTests
         }
 
 
-        
+        [Fact]
         public void findProductTest_domestic()
         {
             EPService.EDIPostService ep = new EPService.EDIPostService("cc1b9a01af40d50ea6776d449f8afe9707c77750", "http://apitest.edipost.no/");
@@ -71,6 +71,7 @@ namespace EDIPostServiceTests
             cb.addItem(new EPClient.Item(10, 20, 30, 40));
             cb.addItem(new EPClient.Item(2.5, 25, 35, 45));
             
+            
             EPClient.Consignment c = cb.build();
             
             List<EPClient.Product> products = ep.findProducts(c);
@@ -79,6 +80,43 @@ namespace EDIPostServiceTests
         }
 
 
+        [Fact]
+        public void createConsignmentTest_returntype()
+        {
+            EPService.EDIPostService ep = new EPService.EDIPostService("cc1b9a01af40d50ea6776d449f8afe9707c77750", "http://apitest.edipost.no/");
+            EPClient.Consignor consignor = ep.getDefaultConsignor();
+
+            Consignment c = _getTestConsignment(consignor, 8);
+
+            Consignment rc = ep.createConsignment(c);
+
+            Assert.False(true);
+        }
+
+
+
+        private Consignment _getTestConsignment(Consignor consignor, int productId = 0)
+        {
+            EPClient.Consignee consignee = _getTestConsignee(1305808);
+            EPClient.Items items = new EPClient.Items();
+
+            EPBuilder.ConsignmentBuilder cb = new EPBuilder.ConsignmentBuilder();
+            cb.consigneeID = consignee.id;
+            cb.consignorID = consignor.id;
+            cb.addItem(new EPClient.Item(10, 20, 30, 40));
+            cb.addItem(new EPClient.Item(2.5, 25, 35, 45));
+            
+            
+
+            if (productId > 0)
+            {
+                cb.productID = productId;
+            }
+
+            EPClient.Consignment c = cb.build();
+
+            return c;
+        }
        
 
         private EPClient.Consignee _getTestConsignee(int id = 0)

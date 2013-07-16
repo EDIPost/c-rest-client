@@ -41,7 +41,21 @@ namespace EDIPostService.Client.Builder
             {
                 this.items = new Items();
             }
-            this.items.addItem(i);
+            this.items.Add(i);
+        }
+
+
+        /// <summary>
+        /// Adds a service object to the services container
+        /// </summary>
+        /// <param name="s">The service to be added</param>
+        public void addService(Service s)
+        {
+            if (this.services == null)
+            {
+                this.services = new Services();
+            }
+            this.services.Add(s);
         }
 
 
@@ -66,12 +80,17 @@ namespace EDIPostService.Client.Builder
             // Product
             Product product = new Product();
             product.id = this.productID;
+
+            // Add Services to Product
+            product.services = this.services ?? new Services();
             c.product = product;
 
-            c.items = this.items;
-            c.contentReference = this.contentReference;
-            c.transportInstruction = this.transportInstructions;
-            c.internalReference = this.internalReference;
+            // Items
+            c.items = this.items ?? new Items();
+
+            c.contentReference = this.contentReference ?? " ";
+            c.transportInstructions = this.transportInstructions ?? " ";
+            c.internalReference = this.internalReference ?? " ";
 
             return c;
         }

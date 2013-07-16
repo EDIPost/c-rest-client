@@ -55,6 +55,26 @@ namespace EDIPostService
             return _buildConsignor(xml);
         }
 
+        /// <summary>
+        /// Find the postage for the current consignment
+        /// </summary>
+        /// <param name="c"></param>
+        /// <returns>Consignment</returns>
+        public Consignment getPostage(Consignment c)
+        {
+            Template path = new Template("/consignment/postage");
+            XmlDocument data = null;
+            string accept = "application/vnd.edipost.consignment+xml";
+            string contenttype = "application/vnd.edipost.consignment+xml";
+            List<String> headers = new List<string>();
+
+            string url = path.Render();
+
+            XmlDocument xml = sc.http_get(url, data, headers, accept, contenttype);
+            
+            return new Consignment();
+        }
+
 
         /// <summary>
         /// Fetches all available products
@@ -85,8 +105,37 @@ namespace EDIPostService
             return products;
         }
 
-        
 
+        /// <summary>
+        /// Create the consignment in EDIPost
+        /// </summary>
+        /// <param name="consignment">The consignment to create</param>
+        /// <returns>the created consignment</returns>
+        public Consignment createConsignment(Consignment consignment) {
+            string path = "/consignment";
+            XmlDocument xml = null;
+            string accept = "application/vnd.edipost.consignment+xml";
+            string contenttype = "application/vnd.edipost.consignment+xml";
+
+            XmlDocument data = EPTools.xml.format<Consignment>(consignment, true);
+            
+            try
+            {
+                xml = sc.http_post(path, data, null, accept, contenttype);
+
+                if (xml.GetType() != typeof(XmlDocument))
+                {
+                    throw new DataException("Invalid return data.");
+                }
+            }
+            catch (EPService.Exceptions.ConnectionException ce)
+            {
+                throw ce;
+            }
+
+
+            return new Consignment();
+        }
         
         
         /// <summary>
@@ -119,6 +168,58 @@ namespace EDIPostService
              
             return _buildConsignee(xml);
 
+        }
+
+
+
+        /// <summary>
+        /// Prints the consignment and return a PDF stream
+        /// </summary>
+        /// <param name="c">The consignment to print</param>
+        /// <returns>a stream containing the PDF</returns>
+        public string printConsignment(Consignment c)
+        {
+            return "";
+        }
+
+        /// <summary>
+        /// Fetches a consignment from the archive
+        /// </summary>
+        /// <param name="id">id of the consignment to get</param>
+        /// <returns>consignment</returns>
+        public Consignment getConsignment(int id)
+        {
+            return new Consignment();
+        }
+
+        /// <summary>
+        /// Finds consignements from the archive based on a search criterea
+        /// </summary>
+        /// <param name="query">The query string</param>
+        /// <returns>List of consignments</returns>
+        public List<Consignment> searchConsignment(string query)
+        {
+            return new List<Consignment>();
+        }
+
+        /// <summary>
+        /// Finds consignee from the EDIPost addressbook
+        /// </summary>
+        /// <param name="query">the search query</param>
+        /// <returns>List of consigees</returns>
+        public List<Consignee> searchConsignee(string query)
+        {
+            return new List<Consignee>();
+        }
+
+        /// <summary>
+        /// Fetches a consignee on ID
+        /// </summary>
+        /// <param name="id">id of the consignment</param>
+        /// <returns>the consignee</returns>
+        public Consignee getConsignee(int id)
+        {
+            return new Consignee();
         }
 
 

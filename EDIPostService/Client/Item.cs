@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml.Serialization;
 
 namespace EDIPostService.Client
 {
@@ -17,7 +18,9 @@ namespace EDIPostService.Client
         public double length { get; set; }
         #endregion
 
-        public Item( double weight = 0, double height = 0, double width = 0, double length = 0 ){
+        public Item(){}
+        
+        public Item( double weight = 0, double height = 0, double width = 0, double length = 0 ) : this() {
             this.weight = weight;
             this.height = height;
             this.width = width;

@@ -198,8 +198,14 @@ namespace EDIPostService.ServiceConnection
 
 
                     string data_string = "";
+
+                    // Settings to make sure we get no shorthand tags. e.g <tag />
+                    var settings = new XmlWriterSettings();
+                    var propInfo = settings.GetType().GetProperty("OutputMethod");
+                    propInfo.SetValue(settings, XmlOutputMethod.Xml, null);
+
                     using (var stringWriter = new StringWriter())
-                    using (var xmlTextWriter = XmlWriter.Create(stringWriter))
+                    using (var xmlTextWriter = XmlWriter.Create(stringWriter, settings))
                     {
                         data.WriteTo(xmlTextWriter);
                         xmlTextWriter.Flush();
@@ -210,7 +216,9 @@ namespace EDIPostService.ServiceConnection
 
                     MemoryStream sw = new MemoryStream();
 
-                    byte[] buffer = Encoding.ASCII.GetBytes(data_string);
+                    // Make sure we send data with correct encoding.
+                    byte[] buffer = Encoding.UTF8.GetBytes(data_string);
+                    
                     req.ContentLength = buffer.Length;
 
                     Stream PostData = req.GetRequestStream();

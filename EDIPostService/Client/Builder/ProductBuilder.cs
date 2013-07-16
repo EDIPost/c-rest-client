@@ -30,7 +30,7 @@ namespace EDIPostService.Client.Builder
             {
                 this.services = new Services();
             }
-            this.services.addService(s);
+            this.services.Add(s);
         }
 
 

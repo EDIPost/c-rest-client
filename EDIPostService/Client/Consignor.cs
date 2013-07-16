@@ -7,10 +7,10 @@ using System.Xml.Serialization;
 
 namespace EDIPostService.Client
 {
-    [XmlRoot("Consignor")]
+    [XmlRoot("consignor")]
     public class Consignor : Party
     {
-        [XmlElement("id")]
+        [XmlAttribute("id")]
         public int id { get; set; }
     }
 }
