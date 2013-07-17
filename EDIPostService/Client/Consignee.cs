@@ -10,7 +10,7 @@ namespace EDIPostService.Client
     [XmlRoot("consignee")]
     public class Consignee : Party
     {
-        [XmlAttribute("id")]
-        public int id { get; set; }
+       /* [XmlAttribute("id")]
+        public int id { get; set; } */
     }
 }

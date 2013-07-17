@@ -133,7 +133,7 @@ namespace EDIPostService
             {
                 throw ce;
             }
-
+              
             Consignment c = this._buildConsignment(xml);
 
             return c;
@@ -288,9 +288,9 @@ namespace EDIPostService
 
 
                 i.weight = Convert.ToDouble(EPTools.xml.nodeValue(item, "weight", true), CultureInfo.InvariantCulture);
-                i.width = Convert.ToDouble(EPTools.xml.nodeValue(item, "width", true), CultureInfo.InvariantCulture);
                 i.length = Convert.ToDouble(EPTools.xml.nodeValue(item, "length", true), CultureInfo.InvariantCulture);
                 i.height = Convert.ToDouble(EPTools.xml.nodeValue(item, "height", true), CultureInfo.InvariantCulture);
+                i.width = Convert.ToDouble(EPTools.xml.nodeValue(item, "width", true), CultureInfo.InvariantCulture);
                 
                 c.items.Add(i);
             }
