@@ -6,9 +6,16 @@ using System.Threading.Tasks;
 
 namespace EDIPostService.Client.Builder
 {
+    /// <summary>
+    /// The builder class for the Consignee
+    /// </summary>
     public class ConsigneeBuilder : PartyBuilder
     {
 
+        /// <summary>
+        /// Builds the Consignee based on the data
+        /// </summary>
+        /// <returns>a Consignee object</returns>
         public Consignee build()
         {
             Consignee c = new Consignee();

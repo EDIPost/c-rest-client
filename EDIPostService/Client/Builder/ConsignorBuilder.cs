@@ -6,9 +6,18 @@ using System.Threading.Tasks;
 
 namespace EDIPostService.Client.Builder
 {
+
+    /// <summary>
+    /// A builder class to build proper Consignor objects
+    /// Based on the PartyBuilder class
+    /// </summary>
     public class ConsignorBuilder : PartyBuilder
     {
 
+        /// <summary>
+        /// Builds the correct object
+        /// </summary>
+        /// <returns></returns>
         public Consignor build()
         {
             Consignor c = new Consignor();

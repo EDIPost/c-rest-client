@@ -6,21 +6,39 @@ using System.Xml.Serialization;
 
 namespace EDIPostService.Client
 {
+    /// <summary>
+    /// The consignment/shipment object
+    /// </summary>
     [XmlRoot("consignment")]
     public class Consignment
     {
+        /// <summary>
+        /// The ID of the consignment
+        /// </summary>
         [XmlAttribute("id")]
         public int id { get; set; }
 
+        /// <summary>
+        /// The consignor/sender of the consginment
+        /// </summary>
         [XmlElement("consignor")]
         public Consignor consignor { get; set; }
 
+        /// <summary>
+        /// The consignee/recipient of the consignment
+        /// </summary>
         [XmlElement("consignee")]
         public Consignee consignee { get; set; }
 
+        /// <summary>
+        /// The product/shipmenttype we want to use
+        /// </summary>
         [XmlElement("product")]
         public Product product { get; set; }
 
+        /// <summary>
+        /// A list of items/connotes we want to ship
+        /// </summary>
         [XmlArray("items")]
         [XmlArrayItem("item")]
         public Items items { get; set; }
@@ -46,10 +64,15 @@ namespace EDIPostService.Client
         [XmlElement("internalReference")]
         public string internalReference { get; set; }
 
+        /// <summary>
+        /// The unique identifier of the consignment.
+        /// </summary>
         [XmlIgnore]
         public string shipmentNumber { get; set; }
 
-
+        /// <summary>
+        /// Constructor class
+        /// </summary>
         public Consignment()
         {
             this.contentReference = " ";

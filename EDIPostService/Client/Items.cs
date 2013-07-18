@@ -6,5 +6,8 @@ using System.Xml.Serialization;
 
 namespace EDIPostService.Client
 {
+    /// <summary>
+    /// Containerclass for multiple items
+    /// </summary>
     public class Items : List<Item>{}
 }

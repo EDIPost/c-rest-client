@@ -12,6 +12,10 @@ using System.Globalization;
 
 namespace EDIPostService.Tools
 {
+
+    /// <summary>
+    /// Tools to use for interal use
+    /// </summary>
     public class xml
     {
 

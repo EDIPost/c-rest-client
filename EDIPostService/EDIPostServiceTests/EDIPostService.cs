@@ -103,36 +103,31 @@ namespace EDIPostServiceTests
 
             Consignment rc = ep.createConsignment(c);
 
-            Assert.False(true);
+            Assert.IsAssignableFrom<EPClient.Consignment>(rc);
         }
-
 
 
         [Fact]
-        public void TestCreateConsignment()
+        public void getConsignmentTest_typecheck()
         {
-            EPService.EDIPostService service = new EPService.EDIPostService("cc1b9a01af40d50ea6776d449f8afe9707c77750", "http://apitest.edipost.no/");
+            EPService.EDIPostService ep = new EPService.EDIPostService("cc1b9a01af40d50ea6776d449f8afe9707c77750", "http://apitest.edipost.no/");
+            EPClient.Consignment consignment = ep.getConsignment(612131);
 
-            EPService.Client.Builder.ConsigneeBuilder cb = new EPService.Client.Builder.ConsigneeBuilder();
-            cb.contactName = "Bjørn Erik Moen";
-            cb.contactEmail = "be@quick.no";
-            cb.contactCellphone = "97121183";
-
-            cb.customerNumber = "0001";   //try without customernumber first to see if we get next free number
-            cb.country = "NO";
-            cb.postAddress = "Skrenten 8";
-            cb.postCity = "Gjøvik";
-            cb.postZip = "2819";
-            cb.streetAddress = "Skrenten 8";
-            cb.streetCity = "Gjøvik";
-            cb.streetZip = "2819";
-
-            Consignee newConsignee = cb.build();
-
-            newConsignee = service.createConsignee(newConsignee);
-
-            Assert.False(true);
+            Assert.IsAssignableFrom<EPClient.Consignment>(consignment);
         }
+
+
+        [Fact]
+        public void printConsignmentTest_checkStream()
+        {
+            EPService.EDIPostService ep = new EPService.EDIPostService("cc1b9a01af40d50ea6776d449f8afe9707c77750", "http://apitest.edipost.no/");
+            string pdf = ep.printConsignment(612131);
+
+            Assert.True((System.Text.Encoding.Unicode.GetString(System.Convert.FromBase64String(pdf)).Substring(1,3) == "PDF"));
+        }
+
+
+      
 
 
 

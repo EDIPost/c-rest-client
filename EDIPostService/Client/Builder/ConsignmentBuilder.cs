@@ -7,26 +7,58 @@ using EDIPostService.Client;
 
 namespace EDIPostService.Client.Builder
 {
+    /// <summary>
+    /// Builder class to create a consignment with the bare minimum information.
+    /// </summary>
     public class ConsignmentBuilder
     {
         
         # region properties
+        /// <summary>
+        /// the id of the consignment
+        /// </summary>
         public int id { get; set; }
 
+        /// <summary>
+        /// The id of the consignor
+        /// </summary>
         public int consignorID { get; set; }
 
+        /// <summary>
+        /// The id of the consignee
+        /// </summary>
         public int consigneeID { get; set; }
 
+        /// <summary>
+        /// The id of the product
+        /// </summary>
         public int productID { get; set; }
 
+        /// <summary>
+        /// A list of items 
+        /// </summary>
         public Items items { get; set; }
 
+        /// <summary>
+        /// a list of services
+        /// </summary>
         public Services services { get; set; }
 
+        /// <summary>
+        /// Information to the consignee/recipient
+        /// <remarks>also available in the preadvice file</remarks>
+        /// </summary>
         public string contentReference { get; set; }
 
+        /// <summary>
+        /// Information to the Transporter/Carrier
+        /// <remarks>Also avaialable in the preadvice file</remarks>
+        /// </summary>
         public string transportInstructions { get; set; }
 
+        /// <summary>
+        /// An internal reference. Only for internal use, but is searchable in the archive
+        /// </summary>
         public string internalReference { get; set; }
         # endregion
 

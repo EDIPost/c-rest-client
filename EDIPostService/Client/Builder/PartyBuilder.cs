@@ -6,124 +6,82 @@ using System.Threading.Tasks;
 
 namespace EDIPostService.Client.Builder
 {
+    /// <summary>
+    /// The base class of all parties.
+    /// </summary>
     public class PartyBuilder
     {
-        private int _id;
 
-        public int id
-        {
-            get { return _id; }
-            set { _id = value; }
-        }
+        /// <summary>
+        /// The id of the party
+        /// </summary>
+        public int id { get; set; }
 
-        private String _companyName = "";
+        /// <summary>
+        /// The company name
+        /// <strong>mandatory</strong>
+        /// </summary>
+        public string companyName { get; set; }
 
-        public String companyName
-        {
-            get { return _companyName; }
-            set { _companyName = value; }
-        }
+        /// <summary>
+        /// The customernumber
+        /// </summary>
+        public string customerNumber { get; set; }
 
+        /// <summary>
+        /// The street/delivery address
+        /// </summary>
+        public string streetAddress { get; set; }
 
-        private String _customerNumber = "";
+        /// <summary>
+        /// the zipcode for the street address
+        /// </summary>
+        public string streetZip { get; set; }
 
-        public String customerNumber
-        {
-            get { return _customerNumber; }
-            set { _customerNumber = value; }
-        }
+        /// <summary>
+        /// The city name  
+        /// </summary>
+        public string streetCity { get; set; }
 
+        /// <summary>
+        /// The postal address
+        /// </summary>
+        public string postAddress { get; set; }
 
-        private String _streetAddress = "";
+        /// <summary>
+        /// The zipcode of the postal address
+        /// </summary>
+        public string postZip { get; set; }
 
-        public String streetAddress
-        {
-            get { return _streetAddress; }
-            set { _streetAddress = value; }
-        }
+        /// <summary>
+        /// The city that the postal address belongs too
+        /// </summary>
+        public string postCity { get; set; }
 
-        private String _streetZip = "";
+        /// <summary>
+        /// The country
+        /// </summary>
+        public string country { get; set; }
 
-        public String streetZip
-        {
-            get { return _streetZip; }
-            set { _streetZip = value; }
-        }
+        /// <summary>
+        /// Complete name of the contact person
+        /// </summary>
+        public string contactName { get; set; }
 
+        /// <summary>
+        /// The telephone number of the contact person
+        /// </summary>
+        public string contactPhone { get; set; }
 
-        private String _streetCity = "";
+        /// <summary>
+        /// The cellphone number of the contact person.
+        /// </summary>
+        public string contactCellphone { get; set; }
 
-        public String streetCity
-        {
-            get { return _streetCity; }
-            set { _streetCity = value; }
-        }
-
-        private String _postAddress = "";
-
-        public String postAddress
-        {
-            get { return _postAddress; }
-            set { _postAddress = value; }
-        }
-
-        private String _postZip = "";
-
-        public String postZip
-        {
-            get { return _postZip; }
-            set { _postZip = value; }
-        }
-
-        private String _postCity = "";
-
-        public String postCity
-        {
-            get { return _postCity; }
-            set { _postCity = value; }
-        }
-
-        private String _country = "";
-
-        public String country
-        {
-            get { return _country; }
-            set { _country = value; }
-        }
-
-        private String _contactName = "";
-
-        public String contactName
-        {
-            get { return _contactName; }
-            set { _contactName = value; }
-        }
-
-        private String _contactPhone = "";
-
-        public String contactPhone
-        {
-            get { return _contactPhone; }
-            set { _contactPhone = value; }
-        }
-
-        private String _contactCellphone = "";
-
-        public String contactCellphone
-        {
-            get { return _contactCellphone; }
-            set { _contactCellphone = value; }
-        }
-
-        private String _contactEmail = "";
-
-        public String contactEmail
-        {
-            get { return _contactEmail; }
-            set { _contactEmail = value; }
-        }
-
-
+        /// <summary>
+        /// The email address of the contact person
+        /// </summary>
+        public string contactEmail { get; set; }
 
     }
 }

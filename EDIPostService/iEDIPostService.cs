@@ -42,9 +42,9 @@ namespace EDIPostService
         /// <summary>
         /// Prints the consignment and return a PDF stream
         /// </summary>
-        /// <param name="c"></param>
+        /// <param name="consignmentid">The id of the consignment to print</param>
         /// <returns>a stream containing the PDF</returns>
-        string printConsignment(Consignment c);
+        string printConsignment(int consignmentid);
 
         /// <summary>
         /// Fetches a consignment from the archive

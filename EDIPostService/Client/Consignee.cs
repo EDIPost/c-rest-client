@@ -7,6 +7,9 @@ using System.Xml.Serialization;
 
 namespace EDIPostService.Client
 {
+    /// <summary>
+    /// The consignee class
+    /// </summary>
     [XmlRoot("consignee")]
     public class Consignee : Party
     {

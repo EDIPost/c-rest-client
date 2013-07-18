@@ -15,44 +15,34 @@ namespace EDIPostService.ServiceConnection
     /// </summary>
     public static class Constants
     {
+        /// <summary>
+        /// A constant to define POST method
+        /// </summary>
         public const string _post_ = "POST";
+
+        /// <summary>
+        /// Constant to define GET method
+        /// </summary>
         public const string _get_ = "GET";
     }
 
+
+    /// <summary>
+    /// Class that manaage all lower level communication with the API
+    /// </summary>
     public class ServiceConnection
     {
         #region properties
         /// <summary>
         /// Holds the URL for EDIPost API interface
         /// </summary>
-        private string _baseurl;
-        public string baseurl
-        {
-            get
-            {
-                return this._baseurl;
-            }
-            set
-            {
-                this._baseurl = value;
-            }
-        }
+        public string baseurl { get; set; }
+        
 
         /// <summary>
         /// Holds the API key to identify the user
         /// </summary>
-        private string _apikey;
-        public string apikey
-        {
-            get
-            {
-                return this._apikey;
-            }
-            set
-            {
-                this._apikey = value;
-            }
-        }
+        public string apikey { get; set; }
         # endregion
 
         /// <summary>
@@ -70,14 +60,14 @@ namespace EDIPostService.ServiceConnection
 
 
         /// <summary>
-        /// Public method to handle GET requests
+        /// Public method to do the GET request
         /// </summary>
-        /// <param name="url"></param>
-        /// <param name="data"></param>
-        /// <param name="headers"></param>
-        /// <param name="accept"></param>
-        /// <param name="contenttype"></param>
-        /// <returns></returns>
+        /// <param name="url">The partial url for the request</param>
+        /// <param name="data">the data to be posted</param>
+        /// <param name="headers">additional headers</param>
+        /// <param name="accept">Accepted datataype</param>
+        /// <param name="contenttype">The contenttype</param>
+        /// <returns>XmlDocument</returns>
         public XmlDocument http_get(string url, XmlDocument data = null, List<String> headers = null, string accept = null, string contenttype = null )
         {
             return _getRequest(url, headers, data, accept, contenttype);
@@ -88,11 +78,11 @@ namespace EDIPostService.ServiceConnection
         /// <summary>
         /// Public method to do the POST request
         /// </summary>
-        /// <param name="url"></param>
-        /// <param name="data"></param>
-        /// <param name="headers"></param>
-        /// <param name="accept"></param>
-        /// <param name="contenttype"></param>
+        /// <param name="url">The partial url for the request</param>
+        /// <param name="data">the data to be posted</param>
+        /// <param name="headers">additional headers</param>
+        /// <param name="accept">Accepted datataype</param>
+        /// <param name="contenttype">The contenttype</param>
         /// <returns>XmlDocument</returns>
         public XmlDocument http_post(string url, XmlDocument data = null, List<String> headers = null, string accept = null, string contenttype = null)
         {
@@ -103,13 +93,14 @@ namespace EDIPostService.ServiceConnection
 
 
         /// <summary>
-        /// Internal method to handle POST requests.
+        /// private method to handle the POST request
         /// </summary>
-        /// <param name="url"></param>
-        /// <param name="headers"></param>
-        /// <param name="data"></param>
-        /// <param name="accept"></param>
-        /// <returns></returns>
+        /// <param name="url">The partial url for the request</param>
+        /// <param name="data">the data to be posted</param>
+        /// <param name="headers">additional headers</param>
+        /// <param name="accept">Accepted datataype</param>
+        /// <param name="contenttype">The contenttype</param>
+        /// <returns>XmlDocument</returns>
         private XmlDocument _postRequest(string url, List<String> headers = null, XmlDocument data = null, string accept = null, string contenttype = null)
         {
             return _handleRequest( url, Constants._post_, headers, data, accept, contenttype );
@@ -120,13 +111,14 @@ namespace EDIPostService.ServiceConnection
 
 
         /// <summary>
-        /// Internal method to handle GET requests
+        /// Private method to handle the getRequest
         /// </summary>
-        /// <param name="url"></param>
-        /// <param name="headers"></param>
-        /// <param name="data"></param>
-        /// <param name="accept"></param>
-        /// <returns></returns>
+        /// <param name="url">The partial url for the request</param>
+        /// <param name="data">the data to be posted</param>
+        /// <param name="headers">additional headers</param>
+        /// <param name="accept">Accepted datataype</param>
+        /// <param name="contenttype">The contenttype</param>
+        /// <returns>XmlDocument</returns>
         private XmlDocument _getRequest(string url, List<String> headers = null, XmlDocument data = null, string accept = null, string contenttype = null )
         {
             return _handleRequest( url, Constants._get_, headers, data, accept, contenttype );
@@ -227,8 +219,22 @@ namespace EDIPostService.ServiceConnection
                 Stream Answer = WebResp.GetResponseStream();
                 StreamReader response = new StreamReader(Answer);
 
-                xml.LoadXml(response.ReadToEnd());
+                string response_raw = response.ReadToEnd();
 
+                try
+                {
+                    xml.LoadXml(response_raw);
+                }
+                catch (XmlException e)
+                {
+                    // create a xml datawrapper
+                    xml = new XmlDocument();
+                    XmlDeclaration dec = xml.CreateXmlDeclaration("1.0", null, null);
+                    xml.AppendChild(dec);
+                    XmlElement root = xml.CreateElement("data");
+                    root.InnerText = System.Convert.ToBase64String(System.Text.Encoding.Unicode.GetBytes(response_raw));
+                    xml.AppendChild(root);   
+                }
             }
             catch (Exception e)
             {

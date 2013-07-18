@@ -17,6 +17,10 @@ using System.Globalization;
 
 namespace EDIPostService
 {
+
+    /// <summary>
+    /// An party enum for better readability
+    /// </summary>
     enum PARTY : int { consignor=1, consignee=2, payer=7 };
     
 
@@ -26,7 +30,10 @@ namespace EDIPostService
     public class EDIPostService : iEDIPostService
     {
 
-        public EPService.ServiceConnection sc { set; get; }
+        /// <summary>
+        /// internal reference to the ServiceConnection
+        /// </summary>
+        private EPService.ServiceConnection sc { set; get; }
 
         /// <summary>
         /// Constructor
@@ -50,7 +57,7 @@ namespace EDIPostService
             String accept = "application/vnd.edipost.party+xml";
             List<String> headers = new List<string>();
 
-            /// Fetches the data 
+            // Fetches the data 
             XmlDocument xml = sc.http_get(path, data, headers, accept);
 
             return _buildConsignor(xml);
@@ -175,13 +182,23 @@ namespace EDIPostService
 
 
         /// <summary>
-        /// Prints the consignment and return a PDF stream
+        /// Prints the consignment and return a BAE64 encoded representation of the PDF file
         /// </summary>
-        /// <param name="c">The consignment to print</param>
-        /// <returns>a stream containing the PDF</returns>
-        public string printConsignment(Consignment c)
+        /// <param name="id">The id of the consignment to print</param>
+        /// <returns>a base64 encoded string containing the PDF</returns>
+        public string printConsignment(int id)
         {
-            return "";
+            Antlr4.StringTemplate.Template path = new Antlr4.StringTemplate.Template("/consignment/<consignmentId>/print");
+            string accept = "application/pdf";
+            string contenttype = "application/pdf";
+            List<String> headers = new List<string>();
+
+            path.Add("consignmentId", id);
+            string url = path.Render();
+
+            XmlDocument xml = sc.http_get(url, null, null, accept, contenttype);
+
+            return EPTools.xml.nodeValue(xml, "//data");
         }
 
         /// <summary>
@@ -191,7 +208,20 @@ namespace EDIPostService
         /// <returns>consignment</returns>
         public Consignment getConsignment(int id)
         {
-            return new Consignment();
+            Antlr4.StringTemplate.Template path = new Antlr4.StringTemplate.Template("/consignment/<consignmentId>");
+            string accept = "application/vnd.edipost.consignment+xml";
+            string contenttype = null;
+            List<String> headers = new List<string>();
+
+            path.Add("consignmentId", id);
+            string url = path.Render();
+
+            XmlDocument xml = sc.http_get(url, null, null, accept, contenttype);
+
+            Consignment c = _buildConsignment(xml);
+
+            return c;
+
         }
 
         /// <summary>
@@ -333,7 +363,12 @@ namespace EDIPostService
 
             return pb.build();
         }
-
+    
+        /// <summary>
+        /// Internal method to build an list of products
+        /// </summary>
+        /// <param name="xml">the xmldocument containing the products</param>
+        /// <returns>List of products</returns>
         protected List<Product> _buildProduct(XmlDocument xml)
         {
             List<Product> products = new List<Product>();
@@ -423,7 +458,5 @@ namespace EDIPostService
         # endregion
 
 
-
-        public IFormatProvider InvariantCulture { get; set; }
     }
 }
