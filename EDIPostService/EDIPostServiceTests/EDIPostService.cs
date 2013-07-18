@@ -56,6 +56,19 @@ namespace EDIPostServiceTests
 
 
         [Fact]
+        public void createConsigneeTest_specialChars()
+        {
+            EPService.EDIPostService ep = new EPService.EDIPostService("cc1b9a01af40d50ea6776d449f8afe9707c77750", "http://apitest.edipost.no/");
+
+            // Create the consignee object
+            EPClient.Consignee c = _getTestConsignee_specialChars();
+            EPClient.Consignee rc = ep.createConsignee(c);
+
+            Assert.IsAssignableFrom<EPClient.Consignee>(rc);
+        }
+
+
+        [Fact]
         public void findProductTest_domestic()
         {
             EPService.EDIPostService ep = new EPService.EDIPostService("cc1b9a01af40d50ea6776d449f8afe9707c77750", "http://apitest.edipost.no/");
@@ -89,6 +102,34 @@ namespace EDIPostServiceTests
             Consignment c = _getTestConsignment(consignor, 8);
 
             Consignment rc = ep.createConsignment(c);
+
+            Assert.False(true);
+        }
+
+
+
+        [Fact]
+        public void TestCreateConsignment()
+        {
+            EPService.EDIPostService service = new EPService.EDIPostService("cc1b9a01af40d50ea6776d449f8afe9707c77750", "http://apitest.edipost.no/");
+
+            EPService.Client.Builder.ConsigneeBuilder cb = new EPService.Client.Builder.ConsigneeBuilder();
+            cb.contactName = "Bjørn Erik Moen";
+            cb.contactEmail = "be@quick.no";
+            cb.contactCellphone = "97121183";
+
+            cb.customerNumber = "0001";   //try without customernumber first to see if we get next free number
+            cb.country = "NO";
+            cb.postAddress = "Skrenten 8";
+            cb.postCity = "Gjøvik";
+            cb.postZip = "2819";
+            cb.streetAddress = "Skrenten 8";
+            cb.streetCity = "Gjøvik";
+            cb.streetZip = "2819";
+
+            Consignee newConsignee = cb.build();
+
+            newConsignee = service.createConsignee(newConsignee);
 
             Assert.False(true);
         }
@@ -137,6 +178,33 @@ namespace EDIPostServiceTests
             cb.contactEmail = "teknisk@edipost.no";
 
             if ( id > 0 ){
+                cb.id = id;
+            }
+
+            EPClient.Consignee c = cb.build();
+            return c;
+        }
+
+
+        private EPClient.Consignee _getTestConsignee_specialChars(int id = 0)
+        {
+            EPBuilder.ConsigneeBuilder cb = new EPBuilder.ConsigneeBuilder();
+            cb.companyName = "Nilsen & sønn";
+            cb.customerNumber = "008";
+            cb.streetAddress = "Calle ÆØÅ";
+            cb.streetCity = "ñunez";
+            cb.streetZip = "0987";
+            cb.postAddress = "Günter æøå";
+            cb.postCity = "Stoke ö ä å";
+            cb.postZip = "1234";
+            cb.country = "NO";
+            cb.contactName = "Kæøå PÆØÅ";
+            cb.contactPhone = "611 59010";
+            cb.contactCellphone = "93 44 93 44";
+            cb.contactEmail = "teknisk@edipost.no";
+
+            if (id > 0)
+            {
                 cb.id = id;
             }
 
