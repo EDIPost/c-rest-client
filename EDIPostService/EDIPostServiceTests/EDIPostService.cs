@@ -127,13 +127,26 @@ namespace EDIPostServiceTests
         }
 
 
-      
 
+        [Fact]
+        public void getPostageTest_checkPostage()
+        {
+            EPService.EDIPostService ep = new EPService.EDIPostService("cc1b9a01af40d50ea6776d449f8afe9707c77750", "http://apitest.edipost.no/");
+
+            EPClient.Consignor consignor = ep.getDefaultConsignor();
+            EPClient.Consignment test_consignment = this._getTestConsignment(consignor, 8);
+
+            EPClient.Consignment c = ep.getPostage(test_consignment);
+
+            Assert.True((c.TotalPostageCost() > 0)); 
+        }
+      
+        
 
 
         private Consignment _getTestConsignment(Consignor consignor, int productId = 0)
         {
-            EPClient.Consignee consignee = _getTestConsignee(1305808);
+            EPClient.Consignee consignee = _getTestConsignee(1305935);
             EPClient.Items items = new EPClient.Items();
 
             EPBuilder.ConsignmentBuilder cb = new EPBuilder.ConsignmentBuilder();
@@ -162,10 +175,10 @@ namespace EDIPostServiceTests
             cb.customerNumber = "007";
             cb.streetAddress = "Street address";
             cb.streetCity = "StreetCity";
-            cb.streetZip = "StreetZip";
+            cb.streetZip = "2830";
             cb.postAddress = "Postal address";
             cb.postCity = "Post City";
-            cb.postZip = "PostZip";
+            cb.postZip = "2831";
             cb.country = "NO";
             cb.contactName = "Contact person";
             cb.contactPhone = "611 59010";

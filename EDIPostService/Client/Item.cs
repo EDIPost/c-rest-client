@@ -49,6 +49,12 @@ namespace EDIPostService.Client
         /// </summary>
         [XmlIgnore]
         public string itemNumber { get; set; }
+
+        /// <summary>
+        /// Description of what is in this item/connote
+        /// </summary>
+        [XmlIgnore]
+        public string content { get; set; }
         #endregion
         
 

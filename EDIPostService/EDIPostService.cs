@@ -66,21 +66,22 @@ namespace EDIPostService
         /// <summary>
         /// Find the postage for the current consignment
         /// </summary>
-        /// <param name="c"></param>
+        /// <param name="consignment">The consignment we want the postage for</param>
         /// <returns>Consignment</returns>
-        public Consignment getPostage(Consignment c)
+        public Consignment getPostage(Consignment consignment)
         {
             Template path = new Template("/consignment/postage");
-            XmlDocument data = null;
             string accept = "application/vnd.edipost.consignment+xml";
             string contenttype = "application/vnd.edipost.consignment+xml";
             List<String> headers = new List<string>();
 
             string url = path.Render();
+            XmlDocument data = EPTools.xml.format<Consignment>(consignment, true);
 
-            XmlDocument xml = sc.http_get(url, data, headers, accept, contenttype);
+            XmlDocument xml = sc.http_post(url, data, headers, accept, contenttype);
             
-            return new Consignment();
+            Consignment c = this._buildConsignment(xml);
+            return c;
         }
 
 
@@ -224,6 +225,7 @@ namespace EDIPostService
 
         }
 
+        
         /// <summary>
         /// Finds consignements from the archive based on a search criterea
         /// </summary>
@@ -231,6 +233,7 @@ namespace EDIPostService
         /// <returns>List of consignments</returns>
         public List<Consignment> searchConsignment(string query)
         {
+               
             return new List<Consignment>();
         }
 
