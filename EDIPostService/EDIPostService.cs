@@ -148,6 +148,8 @@ namespace EDIPostService
         }
         
         
+        
+
         /// <summary>
         /// Creates a consignee party ( recipient )
         /// </summary>
@@ -240,11 +242,38 @@ namespace EDIPostService
         /// <summary>
         /// Finds consignee from the EDIPost addressbook
         /// </summary>
+        /// <remarks>The list of consignees only contain ID and companyName, this one need to be extended to contain all</remarks>
         /// <param name="query">the search query</param>
+        /// <param name="start_at">Start resultset at position</param>
+        /// <param name="return_count">How many to return from the resultset</param>
         /// <returns>List of consigees</returns>
-        public List<Consignee> searchConsignee(string query)
+        public List<Consignee> searchConsignee(string query, int start_at = 1, int return_count = 25)
         {
-            return new List<Consignee>();
+            Antlr4.StringTemplate.Template path = new Antlr4.StringTemplate.Template("/consignee/search?q=<query>&start=<start_at>&count=<return_count>");
+            string accept = "application/vnd.edipost.collection+xml";
+            string contenttype = null;
+            List<String> headers = new List<string>();
+
+            path.Add("query", query);
+            path.Add("start_at", start_at.ToString() );
+            path.Add("return_count", return_count.ToString() );
+            
+            string url = path.Render();
+
+            XmlDocument xml = sc.http_get(url, null, null, accept, contenttype);
+
+            List<Consignee> c =  new List<Consignee>();
+            
+            XmlNodeList item_list = xml.SelectNodes("//collection/entry");
+            foreach (XmlNode item in item_list)
+            {
+                Consignee consignee = new Consignee();
+                consignee.id = Convert.ToInt32(EPTools.xml.nodeValue(item, "@id", true));
+                consignee.companyName = EPTools.xml.nodeValue(item, "companyName");
+                c.Add(consignee);
+            }
+
+            return c;
         }
 
         /// <summary>
