@@ -127,7 +127,19 @@ namespace EDIPostService
             string contenttype = "application/vnd.edipost.consignment+xml";
 
             XmlDocument data = EPTools.xml.format<Consignment>(consignment, true);
-            
+
+            // Error prechecks
+            if (consignment.consignee.id == null)
+            {
+                throw new DataException("Missing Consignee ID");
+            }
+
+            if (consignment.product.id == null)
+            {
+                throw new DataException("Missing Product ID");
+            }
+
+                       
             try
             {
                 xml = sc.http_post(path, data, null, accept, contenttype);
@@ -163,7 +175,24 @@ namespace EDIPostService
             string contenttype = "application/vnd.edipost.party+xml";
             
             XmlDocument data = EPTools.xml.format<Consignee>(consignee, true);
-                    
+
+            // Error precheck
+            if (String.IsNullOrEmpty(consignee.companyName))
+            {
+                throw new DataException("Consignee CompanyName cannot be empty");
+            }
+            if (String.IsNullOrEmpty(consignee.postAddress.zipCode))
+            {
+                throw new DataException("Consignee PostAddress zipCode cannot be empty");
+            }
+            if (String.IsNullOrEmpty(consignee.streetAddress.zipCode))
+            {
+                throw new DataException("Consignee StreetAddress zipCode cannot be empty");
+            }
+
+
+
+            // Do the actual api call        
             try
             {
                 xml = sc.http_post(path, data, null, accept, contenttype);
@@ -283,7 +312,19 @@ namespace EDIPostService
         /// <returns>the consignee</returns>
         public Consignee getConsignee(int id)
         {
-            return new Consignee();
+            Antlr4.StringTemplate.Template path = new Antlr4.StringTemplate.Template("/consignee/<consigneeId>");
+            string accept = "application/vnd.edipost.party+xml";
+            string contenttype = null;
+            List<String> headers = new List<string>();
+
+            path.Add("consigneeId", id);
+            string url = path.Render();
+
+            XmlDocument xml = sc.http_get(url, null, null, accept, contenttype);
+
+            Consignee c = _buildConsignee(xml);
+
+            return c;
         }
 
 

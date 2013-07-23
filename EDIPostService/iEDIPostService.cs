@@ -72,8 +72,10 @@ namespace EDIPostService
         /// Finds consignee from the EDIPost addressbook
         /// </summary>
         /// <param name="query">the search query</param>
+        /// <param name="start_at">Start resultset at position</param>
+        /// <param name="return_count">How many to return from the resultset</param>
         /// <returns>List of consigees</returns>
-        List<Consignee> searchConsignee(string query);
+        List<Consignee> searchConsignee(string query, int start_at = 0, int return_count = 25);
 
         /// <summary>
         /// Fetches a consignee on ID
@@ -81,6 +83,7 @@ namespace EDIPostService
         /// <param name="id"></param>
         /// <returns>the consignee</returns>
         Consignee getConsignee(int id);
+
 
     }
 }
