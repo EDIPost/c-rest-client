@@ -129,7 +129,7 @@ namespace EDIPostService
             XmlDocument data = EPTools.xml.format<Consignment>(consignment, true);
 
             // Error prechecks
-            if (consignment.consignee.id == null)
+            if ( consignment.consignee.id == null)
             {
                 throw new DataException("Missing Consignee ID");
             }
