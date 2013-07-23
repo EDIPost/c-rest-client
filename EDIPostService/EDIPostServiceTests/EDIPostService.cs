@@ -67,6 +67,15 @@ namespace EDIPostServiceTests
             Assert.IsAssignableFrom<EPClient.Consignee>(rc);
         }
 
+        [Fact]
+        public void searchConsigneeTest_type()
+        {
+            EPService.EDIPostService ep = new EPService.EDIPostService("cc1b9a01af40d50ea6776d449f8afe9707c77750", "http://apitest.edipost.no/");
+            List<Consignee> Consignees = ep.searchConsignee("My Comp", 1, 25);
+
+            Assert.IsAssignableFrom <List<EPClient.Consignee>>(Consignees);
+        }
+
 
         [Fact]
         public void findProductTest_domestic()
@@ -104,6 +113,15 @@ namespace EDIPostServiceTests
             Consignment rc = ep.createConsignment(c);
 
             Assert.IsAssignableFrom<EPClient.Consignment>(rc);
+        }
+
+        [Fact]
+        public void getConsigneeTest_typecheck()
+        {
+            EPService.EDIPostService ep = new EPService.EDIPostService("cc1b9a01af40d50ea6776d449f8afe9707c77750", "http://apitest.edipost.no/");
+            Consignment c = ep.getConsignment(612131);
+
+            Assert.IsAssignableFrom<Consignment>(c);
         }
 
 
