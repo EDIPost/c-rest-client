@@ -355,6 +355,8 @@ namespace EDIPostService
             c.transportInstructions = EPTools.xml.nodeValue(xml, "/consignment/transportInstructions");
             c.internalReference = EPTools.xml.nodeValue(xml, "/consignment/internalReference");
 
+            c.trackAndTraceUrl = EPTools.xml.nodeValue(xml, "*/links/link[@rel='trackandtrace-gui']/@href");
+
             // Consignor
             c.consignor = this._buildConsignor(xml);
 

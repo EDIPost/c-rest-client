@@ -65,6 +65,12 @@ namespace EDIPostService.Client
         public string internalReference { get; set; }
 
         /// <summary>
+        /// The URL to the direct transporter track and trace.
+        /// </summary>
+        [XmlElement("trackAndTraceUrl")]
+        public string trackAndTraceUrl { get; set; }
+
+        /// <summary>
         /// The unique identifier of the consignment.
         /// </summary>
         [XmlIgnore]
