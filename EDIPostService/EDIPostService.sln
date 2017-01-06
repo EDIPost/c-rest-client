@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EDIPostService", "EDIPostService.csproj", "{6868846F-4846-42DC-B358-DA08BB90D5AC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EDIPostServiceTests", "EDIPostServiceTests\EDIPostServiceTests.csproj", "{1E09D700-6F30-4FDD-B162-C2E064F20853}"

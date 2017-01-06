@@ -4,85 +4,95 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
-using Xunit;
 using EPService = EDIPostService;
 using EPClient = EDIPostService.Client;
 using EPBuilder = EDIPostService.Client.Builder;
 using System.Net;
 using EDIPostService.Client;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 
 namespace EDIPostServiceTests
 {
+    [TestClass]
     public class EDIPostService
     {
-        [Fact]
+        public const String API_URL = "http://apitest.edipost.no/";
+        public const String API_KEY = "07add61e089e3e8d3a1a7e34e71f462eee2ef8f5";
+        public const int DEFAULT_CONSIGNOR_ID = 3311;
+        public const int CONSIGNEE_ID = 2919802;
+        public const int CONSIGNMENT_ID = 2741016;
+
+
+        [TestMethod]
         public void EDIPostServiceTest_OptionalConstructorParam()
         {
             EPService.EDIPostService ep = new EPService.EDIPostService("213131");
 
-            Assert.False(false);
+            Assert.IsFalse(false);
         }
 
-        [Fact]
+        [TestMethod]
         public void GetDefaultConsignorTest_correct_type()
         {
-            EPService.EDIPostService ep = new EPService.EDIPostService("cc1b9a01af40d50ea6776d449f8afe9707c77750", "http://apitest.edipost.no/");
+            EPService.EDIPostService ep = new EPService.EDIPostService(API_KEY, API_URL);
             EPClient.Consignor c = ep.getDefaultConsignor();
 
-            Assert.IsType<EPClient.Consignor>(c);
+            Assert.IsInstanceOfType(c, typeof(EPClient.Consignor));
         }
 
-        [Fact]
+        [TestMethod]
         public void GetDefaultConsignorTest_correct_data()
         {
-            EPService.EDIPostService ep = new EPService.EDIPostService("cc1b9a01af40d50ea6776d449f8afe9707c77750", "http://apitest.edipost.no/");
+            EPService.EDIPostService ep = new EPService.EDIPostService(API_KEY, API_URL);
             EPClient.Consignor c = ep.getDefaultConsignor();
 
-            Assert.Equal(1305799, c.id);
+            Assert.AreEqual(DEFAULT_CONSIGNOR_ID, c.id);
         }
 
-        [Fact]
+        [TestMethod]
         public void createConsigneeTest_domestic_request()
         {
-            EPService.EDIPostService ep = new EPService.EDIPostService("cc1b9a01af40d50ea6776d449f8afe9707c77750", "http://apitest.edipost.no/");
+            EPService.EDIPostService ep = new EPService.EDIPostService(API_KEY, API_URL);
 
             // Create the consignee object
             EPClient.Consignee c = _getTestConsignee();
             EPClient.Consignee rc = ep.createConsignee(c);
 
-            Assert.IsAssignableFrom<EPClient.Consignee>(rc);
+            Assert.IsTrue(rc is EPClient.Consignee);
         }
 
 
-        [Fact]
+        [TestMethod]
         public void createConsigneeTest_specialChars()
         {
-            EPService.EDIPostService ep = new EPService.EDIPostService("cc1b9a01af40d50ea6776d449f8afe9707c77750", "http://apitest.edipost.no/");
+            EPService.EDIPostService ep = new EPService.EDIPostService(API_KEY, API_URL);
 
             // Create the consignee object
             EPClient.Consignee c = _getTestConsignee_specialChars();
             EPClient.Consignee rc = ep.createConsignee(c);
 
-            Assert.IsAssignableFrom<EPClient.Consignee>(rc);
+            Assert.IsTrue(rc is EPClient.Consignee);
         }
 
-        [Fact]
+        [TestMethod]
         public void searchConsigneeTest_type()
         {
-            EPService.EDIPostService ep = new EPService.EDIPostService("cc1b9a01af40d50ea6776d449f8afe9707c77750", "http://apitest.edipost.no/");
-            List<Consignee> Consignees = ep.searchConsignee("My Comp", 1, 25);
+            EPService.EDIPostService ep = new EPService.EDIPostService(API_KEY, API_URL);
+            List<Consignee> consignees = ep.searchConsignee("Folco", 1, 25);
 
-            Assert.IsAssignableFrom <List<EPClient.Consignee>>(Consignees);
+            Assert.IsTrue(consignees.Count > 0, "Less than 1 consignees returned");
+
+            Assert.IsTrue(consignees[0] is EPClient.Consignee, "Result set has wrong type");
         }
 
 
-        [Fact]
+        [TestMethod]
         public void findProductTest_domestic()
         {
-            EPService.EDIPostService ep = new EPService.EDIPostService("cc1b9a01af40d50ea6776d449f8afe9707c77750", "http://apitest.edipost.no/");
+            EPService.EDIPostService ep = new EPService.EDIPostService(API_KEY, API_URL);
             
-            EPClient.Consignee consignee = _getTestConsignee(1305808);
+            EPClient.Consignee consignee = _getTestConsignee(2919802);
             EPClient.Consignor consignor = ep.getDefaultConsignor();
 
             EPClient.Items items = new EPClient.Items();
@@ -98,65 +108,65 @@ namespace EDIPostServiceTests
             
             List<EPClient.Product> products = ep.findProducts(c);
 
-            Assert.True(products.Count > 0);
+            Assert.IsTrue(products.Count > 0);
         }
 
 
-        [Fact]
+        [TestMethod]
         public void createConsignmentTest_returntype()
         {
-            EPService.EDIPostService ep = new EPService.EDIPostService("cc1b9a01af40d50ea6776d449f8afe9707c77750", "http://apitest.edipost.no/");
+            EPService.EDIPostService ep = new EPService.EDIPostService(API_KEY, API_URL);
             EPClient.Consignor consignor = ep.getDefaultConsignor();
 
             Consignment c = _getTestConsignment(consignor, 8);
 
             Consignment rc = ep.createConsignment(c);
 
-            Assert.IsAssignableFrom<EPClient.Consignment>(rc);
+            Assert.IsTrue(rc is EPClient.Consignment);
         }
 
-        [Fact]
+        [TestMethod]
         public void getConsigneeTest_typecheck()
         {
-            EPService.EDIPostService ep = new EPService.EDIPostService("cc1b9a01af40d50ea6776d449f8afe9707c77750", "http://apitest.edipost.no/");
-            Consignment c = ep.getConsignment(612131);
+            EPService.EDIPostService ep = new EPService.EDIPostService(API_KEY, API_URL);
+            Consignment c = ep.getConsignment(CONSIGNMENT_ID);
 
-            Assert.IsAssignableFrom<Consignment>(c);
+            Assert.IsTrue(c is EPClient.Consignment);
         }
 
 
-        [Fact]
+        [TestMethod]
         public void getConsignmentTest_typecheck()
         {
-            EPService.EDIPostService ep = new EPService.EDIPostService("cc1b9a01af40d50ea6776d449f8afe9707c77750", "http://apitest.edipost.no/");
-            EPClient.Consignment consignment = ep.getConsignment(612131);
+            EPService.EDIPostService ep = new EPService.EDIPostService(API_KEY, API_URL);
+            EPClient.Consignment consignment = ep.getConsignment(CONSIGNMENT_ID);
 
-            Assert.IsAssignableFrom<EPClient.Consignment>(consignment);
+            Assert.IsTrue(consignment is EPClient.Consignment);
         }
 
 
-        [Fact]
+        [TestMethod]
         public void printConsignmentTest_checkStream()
         {
-            EPService.EDIPostService ep = new EPService.EDIPostService("cc1b9a01af40d50ea6776d449f8afe9707c77750", "http://apitest.edipost.no/");
-            string pdf = ep.printConsignment(612131);
+            EPService.EDIPostService ep = new EPService.EDIPostService(API_KEY, API_URL);
+            string pdf = ep.printConsignment(CONSIGNMENT_ID);
 
-            Assert.True((System.Text.Encoding.Unicode.GetString(System.Convert.FromBase64String(pdf)).Substring(1,3) == "PDF"));
+            Assert.IsTrue((System.Text.Encoding.Unicode.GetString(System.Convert.FromBase64String(pdf)).Substring(1,3) == "PDF"));
         }
 
 
 
-        [Fact]
+        [TestMethod]
         public void getPostageTest_checkPostage()
         {
-            EPService.EDIPostService ep = new EPService.EDIPostService("cc1b9a01af40d50ea6776d449f8afe9707c77750", "http://apitest.edipost.no/");
+            EPService.EDIPostService ep = new EPService.EDIPostService(API_KEY, API_URL);
 
             EPClient.Consignor consignor = ep.getDefaultConsignor();
             EPClient.Consignment test_consignment = this._getTestConsignment(consignor, 8);
-
+            
             EPClient.Consignment c = ep.getPostage(test_consignment);
 
-            Assert.True((c.TotalPostageCost() > 0)); 
+            Assert.IsTrue((c.TotalPostageCost() > 0)); 
         }
       
         
@@ -164,7 +174,7 @@ namespace EDIPostServiceTests
 
         private Consignment _getTestConsignment(Consignor consignor, int productId = 0)
         {
-            EPClient.Consignee consignee = _getTestConsignee(1305935);
+            EPClient.Consignee consignee = _getTestConsignee(CONSIGNEE_ID);
             EPClient.Items items = new EPClient.Items();
 
             EPBuilder.ConsignmentBuilder cb = new EPBuilder.ConsignmentBuilder();

@@ -221,6 +221,8 @@ namespace EDIPostService.ServiceConnection
 
                 string response_raw = response.ReadToEnd();
 
+                Console.WriteLine( response_raw );
+
                 try
                 {
                     xml.LoadXml(response_raw);

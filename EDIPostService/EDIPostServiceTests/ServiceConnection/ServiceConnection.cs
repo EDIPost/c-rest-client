@@ -4,30 +4,31 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
-using Xunit;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using EPService = EDIPostService.ServiceConnection;
 
 namespace EDIPostServiceTests.ServiceConnection
 {
+    [TestClass]
     public class ServiceConnection
     {
-        [Fact]
+        [TestMethod]
         public void ConstructorTest()
         {
             EPService.ServiceConnection sc = new EPService.ServiceConnection("http://apitest.edipost.no", "12312-1231321-12312312");
 
-            Assert.Equal("http://apitest.edipost.no", sc.baseurl);
+            Assert.AreEqual("http://apitest.edipost.no", sc.baseurl);
         }
 
-        [Fact]
+        [TestMethod]
         public void ConstructorTest2()
         {
             EPService.ServiceConnection sc = new EPService.ServiceConnection("http://apitest.edipost.no", "12312-1231321-12312312");
 
-            Assert.Equal("12312-1231321-12312312", sc.apikey);
+            Assert.AreEqual("12312-1231321-12312312", sc.apikey);
         }
 
-        [Fact]
+        [TestMethod]
         public void GetRequestTest() 
         {
             XmlDocument result;
@@ -36,7 +37,7 @@ namespace EDIPostServiceTests.ServiceConnection
             result = sc.http_get("/");
             XmlNodeList xlist = result.SelectNodes("/collection/links");
 
-            Assert.True(xlist.Count > 0);
+            Assert.IsTrue(xlist.Count > 0);
         }
 
     }

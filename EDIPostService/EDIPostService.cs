@@ -76,6 +76,7 @@ namespace EDIPostService
             List<String> headers = new List<string>();
 
             string url = path.Render();
+
             XmlDocument data = EPTools.xml.format<Consignment>(consignment, true);
 
             XmlDocument xml = sc.http_post(url, data, headers, accept, contenttype);
