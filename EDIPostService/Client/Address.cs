@@ -17,6 +17,11 @@ namespace EDIPostService.Client
         public String address { get; set; }
 
         /// <summary>
+        /// Address line 2
+        /// </summary>
+        public String address2 { get; set; }
+
+        /// <summary>
         /// The zipcode or postal code
         /// </summary>
         public String zipCode { get; set; }
