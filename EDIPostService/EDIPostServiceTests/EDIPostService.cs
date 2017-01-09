@@ -149,9 +149,10 @@ namespace EDIPostServiceTests
         public void printConsignmentTest_checkStream()
         {
             EPService.EDIPostService ep = new EPService.EDIPostService(API_KEY, API_URL);
-            string pdf = ep.printConsignment(CONSIGNMENT_ID);
+            byte[] pdf = ep.printConsignment(CONSIGNMENT_ID);
 
-            Assert.IsTrue((System.Text.Encoding.Unicode.GetString(System.Convert.FromBase64String(pdf)).Substring(1,3) == "PDF"));
+            string str = System.Text.Encoding.Default.GetString(pdf);
+            Assert.IsTrue( str.Substring(1,3) == "PDF" );
         }
 
 

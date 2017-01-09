@@ -219,7 +219,7 @@ namespace EDIPostService
         /// </summary>
         /// <param name="id">The id of the consignment to print</param>
         /// <returns>a base64 encoded string containing the PDF</returns>
-        public string printConsignment(int id)
+        public byte[] printConsignment(int id)
         {
             Antlr4.StringTemplate.Template path = new Antlr4.StringTemplate.Template("/consignment/<consignmentId>/print");
             string accept = "application/pdf";
@@ -229,9 +229,9 @@ namespace EDIPostService
             path.Add("consignmentId", id);
             string url = path.Render();
 
-            XmlDocument xml = sc.http_get(url, null, null, accept, contenttype);
+            byte[] data = sc.http_get_raw(url, accept, contenttype );
 
-            return EPTools.xml.nodeValue(xml, "//data");
+            return data;
         }
 
         /// <summary>

@@ -231,6 +231,7 @@ namespace EDIPostService.ServiceConnection
                     XmlDeclaration dec = xml.CreateXmlDeclaration("1.0", null, null);
                     xml.AppendChild(dec);
                     XmlElement root = xml.CreateElement("data");
+                    //root.InnerText = System.Convert.ToBase64String(System.Text.Encoding.Unicode.GetBytes(response_raw));
                     root.InnerText = System.Convert.ToBase64String(System.Text.Encoding.Unicode.GetBytes(response_raw));
                     xml.AppendChild(root);   
                 }
@@ -261,6 +262,78 @@ namespace EDIPostService.ServiceConnection
             return xml;
         }
 
-        
+        internal byte[] http_get_raw(string url, string accept, string contenttype)
+        {
+            byte[] data;
+
+            String encoded = System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes("api:" + this.apikey));
+
+            // Builds the URL
+            url = this.baseurl + url.Replace("//", "/");
+
+            try
+            {
+
+                // Set up a Request object
+                HttpWebRequest req = WebRequest.Create(url) as HttpWebRequest;
+                req.Headers.Add("Authorization", "Basic " + encoded);
+
+
+                // Add the Accept header
+                if (accept != null)
+                {
+                    req.Accept = accept;
+                }
+
+
+                // Add ContentType header
+                if (contenttype != null)
+                {
+                    req.ContentType = contenttype;
+                }
+
+
+                req.Method = Constants._get_;
+                req.KeepAlive = true;
+
+
+                HttpWebResponse webResp = (HttpWebResponse)req.GetResponse();
+
+                
+
+                using (var memoryStream = new MemoryStream())
+                {
+                    webResp.GetResponseStream().CopyTo(memoryStream);
+                    data = memoryStream.ToArray();
+                }
+
+
+            }
+            catch (WebException e)
+            {
+                if (e.Status == WebExceptionStatus.ProtocolError && e.Response != null)
+                {
+                    var resp = (HttpWebResponse)e.Response;
+                    StreamReader response = new StreamReader(resp.GetResponseStream());
+                    string responseText = response.ReadToEnd();
+                    response.Close();
+
+                    throw new Exceptions.HttpException(resp.StatusDescription + " (" + (int)resp.StatusCode + ") - " + responseText);
+
+                }
+                else
+                {
+                    throw e;
+                }
+
+            }
+            catch (Exception e)
+            {
+                throw new Exceptions.HttpException(e.Message, e);
+            }
+
+            return data;
+
+        }
     }
 }
