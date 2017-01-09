@@ -142,8 +142,6 @@ namespace EDIPostService.ServiceConnection
         private XmlDocument _handleRequest(string url, string method = Constants._get_, List<String> headers = null, 
                                                 XmlDocument data = null, string accept = null, string contenttype = null)
         {
-            string response_raw = "";
-
             XmlDocument xml = new XmlDocument();
             String encoded = System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes("api:" + this.apikey));
 
@@ -216,12 +214,11 @@ namespace EDIPostService.ServiceConnection
                     PostData.Write(buffer, 0, buffer.Length);
                     PostData.Close();
                 }
-                
-                HttpWebResponse WebResp = (HttpWebResponse)req.GetResponse();
-                Stream Answer = WebResp.GetResponseStream();
-                StreamReader response = new StreamReader(Answer);
 
-                response_raw = response.ReadToEnd();
+
+                HttpWebResponse webResp = (HttpWebResponse) req.GetResponse();
+                StreamReader response = new StreamReader(webResp.GetResponseStream());
+                string response_raw = response.ReadToEnd();
 
                 try
                 {
@@ -238,9 +235,26 @@ namespace EDIPostService.ServiceConnection
                     xml.AppendChild(root);   
                 }
             }
+            catch (WebException e)
+            {
+                if (e.Status == WebExceptionStatus.ProtocolError && e.Response != null)
+                {
+                    var resp = (HttpWebResponse) e.Response;
+                    StreamReader response = new StreamReader(resp.GetResponseStream());
+                    string responseText = response.ReadToEnd();
+                    response.Close();
+
+                    throw new Exceptions.HttpException( resp.StatusDescription + " (" + (int)resp.StatusCode + ") - " + responseText );
+
+                } else
+                {
+                    throw e;
+                }
+
+            }
             catch (Exception e)
             {
-                throw new Exceptions.ConnectionException(e.Message + " (" + response_raw + ")", e.InnerException);
+                throw new Exceptions.HttpException(e.Message, e);
 
             }
 
