@@ -427,11 +427,11 @@ namespace EDIPostService
                 s.name = EPTools.xml.nodeValue(service, "@name");
                 if (service.SelectSingleNode("cost") != null)
                 {
-                    s.cost = Convert.ToDouble(EPTools.xml.nodeValue(service, "cost", true));
+                    s.cost = Convert.ToDouble(EPTools.xml.nodeValue(service, "cost", true), CultureInfo.InvariantCulture);
                 }
                 if (service.SelectSingleNode("vat") != null)
                 {
-                    s.vat = Convert.ToDouble(EPTools.xml.nodeValue(service, "vat", true));
+                    s.vat = Convert.ToDouble(EPTools.xml.nodeValue(service, "vat", true), CultureInfo.InvariantCulture);
                 }
 
                 pb.addService(s);
