@@ -20,8 +20,8 @@ namespace EDIPostServiceTests
         public const String API_URL = "http://apitest.edipost.no/";
         public const String API_KEY = "07add61e089e3e8d3a1a7e34e71f462eee2ef8f5";
         public const int DEFAULT_CONSIGNOR_ID = 3311;
-        public const int CONSIGNEE_ID = 2919802;
-        public const int CONSIGNMENT_ID = 2741016;
+        public const int CONSIGNEE_ID = 3270125;
+        public const int CONSIGNMENT_ID = 3331708;
 
 
         [TestMethod]
@@ -92,7 +92,7 @@ namespace EDIPostServiceTests
         {
             EPService.EDIPostService ep = new EPService.EDIPostService(API_KEY, API_URL);
             
-            EPClient.Consignee consignee = _getTestConsignee(2919802);
+            EPClient.Consignee consignee = _getTestConsignee(CONSIGNEE_ID);
             EPClient.Consignor consignor = ep.getDefaultConsignor();
 
             EPClient.Items items = new EPClient.Items();
