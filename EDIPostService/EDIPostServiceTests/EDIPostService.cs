@@ -49,6 +49,9 @@ namespace EDIPostServiceTests
 
             // Create the consignee object
             EPClient.Consignee c = _getTestConsignee();
+
+            c.contact = null;
+
             EPClient.Consignee rc = ep.createConsignee(c);
 
             Assert.IsAssignableFrom<EPClient.Consignee>(rc);
@@ -66,6 +69,7 @@ namespace EDIPostServiceTests
 
             Assert.IsAssignableFrom<EPClient.Consignee>(rc);
         }
+
 
         [Fact]
         public void searchConsigneeTest_type()
