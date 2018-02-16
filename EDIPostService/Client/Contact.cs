@@ -26,7 +26,7 @@ namespace EDIPostService.Client
         /// <summary>
         /// Cellphone number of the contact
         /// </summary>
-        public String cellPhone { get; set; }
+        public String cellphone { get; set; }
 
 
         /// <summary>

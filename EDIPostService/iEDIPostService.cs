@@ -44,7 +44,7 @@ namespace EDIPostService
         /// </summary>
         /// <param name="consignmentid">The id of the consignment to print</param>
         /// <returns>a stream containing the PDF</returns>
-        string printConsignment(int consignmentid);
+        byte[] printConsignment(int consignmentid);
 
         /// <summary>
         /// Fetches a consignment from the archive

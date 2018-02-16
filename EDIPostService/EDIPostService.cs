@@ -76,6 +76,7 @@ namespace EDIPostService
             List<String> headers = new List<string>();
 
             string url = path.Render();
+
             XmlDocument data = EPTools.xml.format<Consignment>(consignment, true);
 
             XmlDocument xml = sc.http_post(url, data, headers, accept, contenttype);
@@ -218,7 +219,7 @@ namespace EDIPostService
         /// </summary>
         /// <param name="id">The id of the consignment to print</param>
         /// <returns>a base64 encoded string containing the PDF</returns>
-        public string printConsignment(int id)
+        public byte[] printConsignment(int id)
         {
             Antlr4.StringTemplate.Template path = new Antlr4.StringTemplate.Template("/consignment/<consignmentId>/print");
             string accept = "application/pdf";
@@ -228,9 +229,9 @@ namespace EDIPostService
             path.Add("consignmentId", id);
             string url = path.Render();
 
-            XmlDocument xml = sc.http_get(url, null, null, accept, contenttype);
+            byte[] data = sc.http_get_raw(url, accept, contenttype );
 
-            return EPTools.xml.nodeValue(xml, "//data");
+            return data;
         }
 
         /// <summary>
@@ -426,11 +427,11 @@ namespace EDIPostService
                 s.name = EPTools.xml.nodeValue(service, "@name");
                 if (service.SelectSingleNode("cost") != null)
                 {
-                    s.cost = Convert.ToDouble(EPTools.xml.nodeValue(service, "cost", true));
+                    s.cost = Convert.ToDouble(EPTools.xml.nodeValue(service, "cost", true), CultureInfo.InvariantCulture);
                 }
                 if (service.SelectSingleNode("vat") != null)
                 {
-                    s.vat = Convert.ToDouble(EPTools.xml.nodeValue(service, "vat", true));
+                    s.vat = Convert.ToDouble(EPTools.xml.nodeValue(service, "vat", true), CultureInfo.InvariantCulture);
                 }
 
                 pb.addService(s);

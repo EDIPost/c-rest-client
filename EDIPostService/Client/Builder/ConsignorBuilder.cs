@@ -38,7 +38,7 @@ namespace EDIPostService.Client.Builder
 
             Contact co = new Contact();
             co.name = contactName;
-            co.cellPhone = contactCellphone;
+            co.cellphone = contactCellphone;
             co.telephone = contactPhone;
             co.email = contactEmail;
 
