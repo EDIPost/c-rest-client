@@ -22,6 +22,7 @@ namespace EDIPostServiceTests
         public const int DEFAULT_CONSIGNOR_ID = 3311;
         public const int CONSIGNEE_ID = 3270125;
         public const int CONSIGNMENT_ID = 3331708;
+        public const int CONSIGNMENT_ZPL_ID = 3334708;
 
 
         [TestMethod]
@@ -146,7 +147,7 @@ namespace EDIPostServiceTests
 
 
         [TestMethod]
-        public void printConsignmentTest_checkStream()
+        public void printConsignment()
         {
             EPService.EDIPostService ep = new EPService.EDIPostService(API_KEY, API_URL);
             byte[] pdf = ep.printConsignment(CONSIGNMENT_ID);
@@ -155,6 +156,14 @@ namespace EDIPostServiceTests
             Assert.IsTrue( str.Substring(1,3) == "PDF" );
         }
 
+
+        [TestMethod]
+        public void printConsignmentZpl() {
+            EPService.EDIPostService ep = new EPService.EDIPostService(API_KEY, API_URL);
+            string zpl = ep.printConsignmentZpl(CONSIGNMENT_ZPL_ID);
+            
+            Assert.IsTrue(zpl.Substring(0, 3) == "^XA", "Data must start with ^XA");
+        }
 
 
         [TestMethod]

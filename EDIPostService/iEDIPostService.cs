@@ -47,6 +47,13 @@ namespace EDIPostService
         byte[] printConsignment(int consignmentid);
 
         /// <summary>
+        /// Prints the consignment and return a ZPL string
+        /// </summary>
+        /// <param name="id">The id of the consignment to print</param>
+        /// <returns>ZPL string representing the label</returns>
+        string printConsignmentZpl(int id);
+
+        /// <summary>
         /// Fetches a consignment from the archive
         /// </summary>
         /// <param name="id">id of the consignment to get</param>

@@ -211,8 +211,7 @@ namespace EDIPostService
             return _buildConsignee(xml);
 
         }
-
-
+        
 
         /// <summary>
         /// Prints the consignment and return a BAE64 encoded representation of the PDF file
@@ -233,6 +232,28 @@ namespace EDIPostService
 
             return data;
         }
+
+
+        /// <summary>
+        /// Prints the consignment and return a ZPL string
+        /// </summary>
+        /// <param name="id">The id of the consignment to print</param>
+        /// <returns>ZPL string representing the label</returns>
+        public string printConsignmentZpl(int id)
+        {
+            Antlr4.StringTemplate.Template path = new Antlr4.StringTemplate.Template("/consignment/<consignmentId>/print");
+            string accept = "text/vnd.edipost.consignment+zpl";
+            string contenttype = "text/vnd.edipost.consignment+zpl";
+            List<String> headers = new List<string>();
+
+            path.Add("consignmentId", id);
+            string url = path.Render();
+
+            byte[] data = sc.http_get_raw(url, accept, contenttype);
+
+            return System.Text.Encoding.Default.GetString(data);
+        }
+
 
         /// <summary>
         /// Fetches a consignment from the archive
