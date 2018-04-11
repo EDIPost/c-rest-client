@@ -187,12 +187,23 @@ namespace EDIPostServiceTests
             EPClient.Consignee consignee = _getTestConsignee(CONSIGNEE_ID);
             EPClient.Items items = new EPClient.Items();
 
+            Service eAlertMail = new Service();
+            eAlertMail.id = 5;
+            eAlertMail.properties = new Properties();
+            eAlertMail.properties.Add( new Property("EMSG_SMS_NUMBER", "mail@mail.com") );
+
+            Service eAlertSms = new Service();
+            eAlertSms.id = 6;
+            eAlertSms.properties = new Properties();
+            eAlertSms.properties.Add( new Property("EMSG_EMAIL", "mail@mail.com") );
+
             EPBuilder.ConsignmentBuilder cb = new EPBuilder.ConsignmentBuilder();
             cb.consigneeID = consignee.id;
             cb.consignorID = consignor.id;
             cb.addItem(new EPClient.Item(10, 20, 30, 40));
             cb.addItem(new EPClient.Item(2.5, 25, 35, 45));
-            
+            cb.addService( eAlertMail );
+            cb.addService(eAlertSms);
             
 
             if (productId > 0)

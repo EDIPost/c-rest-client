@@ -37,6 +37,13 @@ namespace EDIPostService.Client
         /// </summary>
         [XmlIgnore]
         public double vat{ get; set; }
+
+        /// <summary>
+        /// A list of properties for the service
+        /// </summary>
+        [XmlArray("properties")]
+        [XmlArrayItem("property")]
+        public Properties properties { get; set; }
         # endregion
     }
 }
