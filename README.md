@@ -1,5 +1,9 @@
 # C# REST client for Edipost API
 
+## Nuget
+This package is also available from Nuget
+https://www.nuget.org/packages/EDIPost.EDIPostService
+
 ## Integration tests
 
 Make sure constants points to an existing consignee and consignment. Make the needed modifications in EDIPostServiceTests\EDIPostService.cs
