@@ -92,8 +92,10 @@ namespace EDIPostServiceTests
         public void findProductTest_domestic()
         {
             EPService.EDIPostService ep = new EPService.EDIPostService(API_KEY, API_URL);
-            
-            EPClient.Consignee consignee = _getTestConsignee(CONSIGNEE_ID);
+
+            EPClient.Consignee testConsignee = _getTestConsignee();
+            EPClient.Consignee consignee = ep.createConsignee(testConsignee);
+
             EPClient.Consignor consignor = ep.getDefaultConsignor();
 
             EPClient.Items items = new EPClient.Items();
@@ -119,7 +121,10 @@ namespace EDIPostServiceTests
             EPService.EDIPostService ep = new EPService.EDIPostService(API_KEY, API_URL);
             EPClient.Consignor consignor = ep.getDefaultConsignor();
 
-            Consignment c = _getTestConsignment(consignor, 8);
+            EPClient.Consignee testConsignee = _getTestConsignee();
+            EPClient.Consignee consignee = ep.createConsignee(testConsignee);
+
+            Consignment c = _getTestConsignment(consignor, 8, consignee);
 
             Consignment rc = ep.createConsignment(c);
 
@@ -172,7 +177,11 @@ namespace EDIPostServiceTests
             EPService.EDIPostService ep = new EPService.EDIPostService(API_KEY, API_URL);
 
             EPClient.Consignor consignor = ep.getDefaultConsignor();
-            EPClient.Consignment test_consignment = this._getTestConsignment(consignor, 8);
+
+            EPClient.Consignee testConsignee = _getTestConsignee();
+            EPClient.Consignee consignee = ep.createConsignee(testConsignee);
+
+            EPClient.Consignment test_consignment = this._getTestConsignment(consignor, 8, consignee);
             
             EPClient.Consignment c = ep.getPostage(test_consignment);
 
@@ -182,9 +191,11 @@ namespace EDIPostServiceTests
         
 
 
-        private Consignment _getTestConsignment(Consignor consignor, int productId = 0)
+        private Consignment _getTestConsignment(Consignor consignor, int productId = 0, Consignee consignee = null)
         {
-            EPClient.Consignee consignee = _getTestConsignee(CONSIGNEE_ID);
+            if ( consignee == null )
+                consignee = _getTestConsignee(CONSIGNEE_ID);
+
             EPClient.Items items = new EPClient.Items();
 
             Service eAlertMail = new Service();

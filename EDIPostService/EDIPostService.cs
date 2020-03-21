@@ -3,12 +3,7 @@ using EDIPostService.Client.Builder;
 using EDIPostService.Client.Exceptions;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
-using Antlr4.StringTemplate;
 using EPService = EDIPostService.ServiceConnection;
 using EPTools = EDIPostService.Tools;
 using System.Globalization;
@@ -70,12 +65,11 @@ namespace EDIPostService
         /// <returns>Consignment</returns>
         public Consignment getPostage(Consignment consignment)
         {
-            Template path = new Template("/consignment/postage");
             string accept = "application/vnd.edipost.consignment+xml";
             string contenttype = "application/vnd.edipost.consignment+xml";
             List<String> headers = new List<string>();
 
-            string url = path.Render();
+            string url = "/consignment/postage";
 
             XmlDocument data = EPTools.xml.format<Consignment>(consignment, true);
 
@@ -93,18 +87,12 @@ namespace EDIPostService
         /// <returns></returns>
         public List<Product> findProducts(Consignment c)
         {
-            Template path = new Template("/consignee/<consigneeId>/products?<items>");
             XmlDocument data = null;
             string accept = "application/vnd.edipost.collection+xml";
             string contenttype = null;
             List<String> headers = new List<string>();
             
-            path.Add("consigneeId", c.consignee.id);
-            path.Add("items", "");
-
-            
-
-            string url = path.Render();
+            string url = $"/consignee/{c.consignee.id}/products?";
 
             XmlDocument xml = sc.http_get(url, data, headers, accept, contenttype);
 
@@ -130,12 +118,12 @@ namespace EDIPostService
             XmlDocument data = EPTools.xml.format<Consignment>(consignment, true);
 
             // Error prechecks
-            if ( consignment.consignee.id == null)
+            if ( consignment.consignee == null || consignment.consignee.id == 0)
             {
                 throw new DataException("Missing Consignee ID");
             }
 
-            if (consignment.product.id == null)
+            if (consignment.product == null || consignment.product.id == 0)
             {
                 throw new DataException("Missing Product ID");
             }
@@ -220,13 +208,11 @@ namespace EDIPostService
         /// <returns>a base64 encoded string containing the PDF</returns>
         public byte[] printConsignment(int id)
         {
-            Antlr4.StringTemplate.Template path = new Antlr4.StringTemplate.Template("/consignment/<consignmentId>/print");
             string accept = "application/pdf";
             string contenttype = "application/pdf";
             List<String> headers = new List<string>();
 
-            path.Add("consignmentId", id);
-            string url = path.Render();
+            string url = $"/consignment/{id}/print";
 
             byte[] data = sc.http_get_raw(url, accept, contenttype );
 
@@ -241,13 +227,11 @@ namespace EDIPostService
         /// <returns>ZPL string representing the label</returns>
         public string printConsignmentZpl(int id)
         {
-            Antlr4.StringTemplate.Template path = new Antlr4.StringTemplate.Template("/consignment/<consignmentId>/print");
             string accept = "text/vnd.edipost.consignment+zpl";
             string contenttype = "text/vnd.edipost.consignment+zpl";
             List<String> headers = new List<string>();
 
-            path.Add("consignmentId", id);
-            string url = path.Render();
+            string url = $"/consignment/{id}/print";
 
             byte[] data = sc.http_get_raw(url, accept, contenttype);
 
@@ -262,13 +246,11 @@ namespace EDIPostService
         /// <returns>consignment</returns>
         public Consignment getConsignment(int id)
         {
-            Antlr4.StringTemplate.Template path = new Antlr4.StringTemplate.Template("/consignment/<consignmentId>");
             string accept = "application/vnd.edipost.consignment+xml";
             string contenttype = null;
             List<String> headers = new List<string>();
 
-            path.Add("consignmentId", id);
-            string url = path.Render();
+            string url = $"/consignment/{id}";
 
             XmlDocument xml = sc.http_get(url, null, null, accept, contenttype);
 
@@ -300,16 +282,11 @@ namespace EDIPostService
         /// <returns>List of consigees</returns>
         public List<Consignee> searchConsignee(string query, int start_at = 1, int return_count = 25)
         {
-            Antlr4.StringTemplate.Template path = new Antlr4.StringTemplate.Template("/consignee/search?q=<query>&start=<start_at>&count=<return_count>");
             string accept = "application/vnd.edipost.collection+xml";
             string contenttype = null;
             List<String> headers = new List<string>();
 
-            path.Add("query", query);
-            path.Add("start_at", start_at.ToString() );
-            path.Add("return_count", return_count.ToString() );
-            
-            string url = path.Render();
+            string url = $"/consignee/search?q={query}&start={start_at}&count={return_count}";
 
             XmlDocument xml = sc.http_get(url, null, null, accept, contenttype);
 
@@ -334,13 +311,11 @@ namespace EDIPostService
         /// <returns>the consignee</returns>
         public Consignee getConsignee(int id)
         {
-            Antlr4.StringTemplate.Template path = new Antlr4.StringTemplate.Template("/consignee/<consigneeId>");
             string accept = "application/vnd.edipost.party+xml";
             string contenttype = null;
             List<String> headers = new List<string>();
 
-            path.Add("consigneeId", id);
-            string url = path.Render();
+            string url = $"/consignee/{id}";
 
             XmlDocument xml = sc.http_get(url, null, null, accept, contenttype);
 

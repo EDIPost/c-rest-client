@@ -224,7 +224,7 @@ namespace EDIPostService.ServiceConnection
                 {
                     xml.LoadXml(response_raw);
                 }
-                catch (XmlException e)
+                catch (XmlException)
                 {
                     // create a xml datawrapper
                     xml = new XmlDocument();
