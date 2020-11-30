@@ -105,6 +105,27 @@ namespace EDIPostService
 
 
         /// <summary>
+        /// Find all products for user
+        /// </summary>
+        /// <returns></returns>
+        public List<Product> findAllProducts()
+        {
+            XmlDocument data = null;
+            string accept = "application/vnd.edipost.collection+xml";
+            string contenttype = null;
+            List<String> headers = new List<string>();
+
+            string url = $"/product/all";
+
+            XmlDocument xml = sc.http_get(url, data, headers, accept, contenttype);
+
+            List<Product> products = _buildProduct(xml);
+
+            return products;
+        }
+
+
+        /// <summary>
         /// Create the consignment in EDIPost
         /// </summary>
         /// <param name="consignment">The consignment to create</param>
@@ -451,6 +472,7 @@ namespace EDIPostService
                 ProductBuilder pb = new ProductBuilder();
                 pb.id = Convert.ToInt32( EPTools.xml.nodeValue(n, "@id", true) );
                 pb.name = EPTools.xml.nodeValue(n, "@name");
+                pb.status = EPTools.xml.nodeValue(n, "status");
                 pb.transportername = EPTools.xml.nodeValue(n, "transporter/@name");
 
                 XmlNodeList service_list = n.SelectNodes("services/service");

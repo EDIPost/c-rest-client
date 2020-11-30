@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Xml.Serialization;
+﻿using System.Xml.Serialization;
 
 namespace EDIPostService.Client
 {
@@ -44,5 +40,14 @@ namespace EDIPostService.Client
         [XmlArray("services")]
         [XmlArrayItem("service")]
         public Services services { get; set; }
+
+        /// <summary>
+        /// Custom ToString
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return "ID: " + id + ", Name: " + name + ", Transporter: " + transporter.name + ", Status: " + status;
+        }
     }
 }

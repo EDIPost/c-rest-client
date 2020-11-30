@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using EDIPostService.Client;
 
 namespace EDIPostService
@@ -31,6 +27,11 @@ namespace EDIPostService
         /// <returns>Consignment</returns>
         List<Product> findProducts(Consignment c);
 
+        /// <summary>
+        /// Find all products for user
+        /// </summary>
+        /// <returns></returns>
+        List<Product> findAllProducts();
 
         /// <summary>
         /// Find the postage for the current consignment

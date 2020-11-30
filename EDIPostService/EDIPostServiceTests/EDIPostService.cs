@@ -17,7 +17,7 @@ namespace EDIPostServiceTests
     [TestClass]
     public class EDIPostService
     {
-        public const String API_URL = "http://apitest.edipost.no/";
+        public const String API_URL = "http://api.dev.edipost.no/";
         public const String API_KEY = "07add61e089e3e8d3a1a7e34e71f462eee2ef8f5";
         public const int DEFAULT_CONSIGNOR_ID = 3311;
         public const int CONSIGNEE_ID = 3270125;
@@ -42,6 +42,7 @@ namespace EDIPostServiceTests
             Assert.IsInstanceOfType(c, typeof(EPClient.Consignor));
         }
 
+
         [TestMethod]
         public void GetDefaultConsignorTest_correct_data()
         {
@@ -50,6 +51,7 @@ namespace EDIPostServiceTests
 
             Assert.AreEqual(DEFAULT_CONSIGNOR_ID, c.id);
         }
+
 
         [TestMethod]
         public void createConsigneeTest_domestic_request()
@@ -110,6 +112,18 @@ namespace EDIPostServiceTests
             EPClient.Consignment c = cb.build();
             
             List<EPClient.Product> products = ep.findProducts(c);
+
+            Assert.IsTrue(products.Count > 0);
+        }
+
+
+        [TestMethod]
+        public void findAllProductsTest()
+        {
+            EPService.EDIPostService ep = new EPService.EDIPostService(API_KEY, API_URL);
+
+            List<EPClient.Product> products = ep.findAllProducts();
+            products.ForEach(Console.WriteLine);
 
             Assert.IsTrue(products.Count > 0);
         }
