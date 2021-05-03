@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Xml.Serialization;
+﻿using System.Xml.Serialization;
 
 namespace EDIPostService.Client
 {
@@ -86,19 +82,28 @@ namespace EDIPostService.Client
             this.internalReference = " ";
         }
 
+        /// <summary>
+        /// Fetches the total Postage for consignment
+        /// </summary>
+        /// <param name="includeVat">To include VAT in the total or not.</param>
+        /// <returns>a double containing the total postage</returns>
+        public double TotalCost(bool includeVat = false)
+        {
+            return TotalPostageCost(includeVat) + TotalServiceCost(includeVat);
+        }
 
         /// <summary>
         /// Fetches the total Postage for all items combined
         /// </summary>
-        /// <param name="include_vat">To include VAT in the total or not.</param>
+        /// <param name="includeVat">To include VAT in the total or not.</param>
         /// <returns>a double containing the total postage</returns>
-        public double TotalPostageCost(bool include_vat = false)
+        public double TotalPostageCost(bool includeVat = false)
         {
             double total = 0;
             foreach (Item i in this.items)
             {
                 total += i.cost;
-                if (include_vat)
+                if (includeVat)
                 {
                     total += i.vat;
                 }
@@ -109,24 +114,24 @@ namespace EDIPostService.Client
         /// <summary>
         /// The total cost of all value added services combined
         /// </summary>
-        /// <param name="include_vat">To include VAT in the total or not.</param>
+        /// <param name="includeVat">To include VAT in the total or not.</param>
         /// <returns>The total</returns>
-        public double TotalServiceCost(bool include_vat = false)
+        public double TotalServiceCost(bool includeVat = false)
         {
             double total = 0;
-            foreach (Service s in this.product.services)
+            if (this.product != null && this.product.services != null)
             {
-                total += s.cost;
-                if (include_vat)
+                foreach (Service s in this.product.services)
                 {
-                    total += s.vat;
+                    total += s.cost;
+                    if (includeVat)
+                    {
+                        total += s.vat;
+                    }
                 }
             }
             return total;
         }
 
     }
-
-
-    
 }
