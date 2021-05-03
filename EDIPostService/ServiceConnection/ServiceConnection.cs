@@ -33,16 +33,18 @@ namespace EDIPostService.ServiceConnection
     public class ServiceConnection
     {
         #region properties
+
         /// <summary>
         /// Holds the URL for EDIPost API interface
         /// </summary>
         public string baseurl { get; set; }
-        
+
 
         /// <summary>
         /// Holds the API key to identify the user
         /// </summary>
         public string apikey { get; set; }
+
         # endregion
 
         /// <summary>
@@ -68,7 +70,8 @@ namespace EDIPostService.ServiceConnection
         /// <param name="accept">Accepted datataype</param>
         /// <param name="contenttype">The contenttype</param>
         /// <returns>XmlDocument</returns>
-        public XmlDocument http_get(string url, XmlDocument data = null, List<String> headers = null, string accept = null, string contenttype = null )
+        public XmlDocument http_get(string url, XmlDocument data = null, List<String> headers = null,
+            string accept = null, string contenttype = null)
         {
             return _getRequest(url, headers, data, accept, contenttype);
         }
@@ -84,24 +87,24 @@ namespace EDIPostService.ServiceConnection
         /// <param name="accept">Accepted datataype</param>
         /// <param name="contenttype">The contenttype</param>
         /// <returns>XmlDocument</returns>
-        public XmlDocument http_post(string url, XmlDocument data = null, List<String> headers = null, string accept = null, string contenttype = null)
+        public XmlDocument http_post(string url, XmlDocument data = null, List<String> headers = null,
+            string accept = null, string contenttype = null)
         {
             return _postRequest(url, headers, data, accept, contenttype);
         }
 
 
 
-
         /// <summary>
-        /// private method to handle the POST request
-        /// </summary>
-        /// <param name="url">The partial url for the request</param>
-        /// <param name="data">the data to be posted</param>
-        /// <param name="headers">additional headers</param>
-        /// <param name="accept">Accepted datataype</param>
-        /// <param name="contenttype">The contenttype</param>
-        /// <returns>XmlDocument</returns>
-        private XmlDocument _postRequest(string url, List<String> headers = null, XmlDocument data = null, string accept = null, string contenttype = null)
+    /// private method to handle the POST request
+    /// </summary>
+    /// <param name="url">The partial url for the request</param>
+    /// <param name="data">the data to be posted</param>
+    /// <param name="headers">additional headers</param>
+    /// <param name="accept">Accepted datataype</param>
+    /// <param name="contenttype">The contenttype</param>
+    /// <returns>XmlDocument</returns>
+    private XmlDocument _postRequest(string url, List<String> headers = null, XmlDocument data = null, string accept = null, string contenttype = null)
         {
             return _handleRequest( url, Constants._post_, headers, data, accept, contenttype );
         }
@@ -335,5 +338,49 @@ namespace EDIPostService.ServiceConnection
             return data;
 
         }
+
+
+        /// <summary>
+        /// Public method to do the DELETE request
+        /// </summary>
+        /// <param name="url">The partial url for the request</param>
+        /// <returns>HttpStatusCode</returns>
+        public HttpStatusCode http_delete(string url) {
+            String encoded = System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes("api:" + this.apikey));
+
+            // Builds the URL
+            url = this.baseurl + url.Replace("//", "/");
+
+            try {
+
+                // Set up a Request object
+                HttpWebRequest req = WebRequest.Create(url) as HttpWebRequest;
+                req.Method = "DELETE";
+                req.Headers.Add("Authorization", "Basic " + encoded);
+
+
+
+                HttpWebResponse response = (HttpWebResponse)req.GetResponse();
+                return response.StatusCode;
+
+
+            } catch (WebException e) {
+                if (e.Status == WebExceptionStatus.ProtocolError && e.Response != null) {
+                    var resp = (HttpWebResponse)e.Response;
+                    StreamReader response = new StreamReader(resp.GetResponseStream());
+                    string responseText = response.ReadToEnd();
+                    response.Close();
+
+                    throw new Exceptions.HttpException(resp.StatusDescription + " (" + (int)resp.StatusCode + ") - " + responseText);
+
+                } else {
+                    throw e;
+                }
+
+            } catch (Exception e) {
+                throw new Exceptions.HttpException(e.Message, e);
+            }
+        }
+
     }
 }

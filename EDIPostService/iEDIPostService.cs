@@ -12,13 +12,18 @@ namespace EDIPostService
         /// <returns>Consignor</returns>
         Consignor getDefaultConsignor();
 
-
         /// <summary>
         /// Creates a consignee party ( recipient )
         /// </summary>
         /// <param name="consignee"></param>
         /// <returns>Consignee</returns>
         Consignee createConsignee(Consignee consignee);
+
+        /// <summary>
+        /// Removed a consignee party ( recipient )
+        /// </summary>
+        /// <param name="consigneeId"></param>
+        void removeConsignee(int consigneeId);
 
         /// <summary>
         /// Find all available products for Consignment

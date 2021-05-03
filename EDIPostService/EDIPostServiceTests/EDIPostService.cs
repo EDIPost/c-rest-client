@@ -8,7 +8,9 @@ using EPService = EDIPostService;
 using EPClient = EDIPostService.Client;
 using EPBuilder = EDIPostService.Client.Builder;
 using System.Net;
+using System.Threading;
 using EDIPostService.Client;
+using EDIPostService.ServiceConnection.Exceptions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 
@@ -77,6 +79,28 @@ namespace EDIPostServiceTests
 
             Assert.IsTrue(rc is EPClient.Consignee);
         }
+
+
+        [TestMethod]
+        public void removeConsigneeTest() {
+            EPService.EDIPostService ep = new EPService.EDIPostService(API_KEY, API_URL);
+
+            // Create the consignee object
+            EPClient.Consignee c = _getTestConsignee();
+            EPClient.Consignee rc = ep.createConsignee(c);
+
+            ep.removeConsignee(rc.id);
+        }
+
+
+        [TestMethod]
+        [ExpectedException(typeof(HttpException), "It should not be possible to remove a non-exsiting consignee ID")]
+        public void removeConsigneeNonExistingConsingneeTest() {
+            EPService.EDIPostService ep = new EPService.EDIPostService(API_KEY, API_URL);
+
+            ep.removeConsignee(987654321);  // Non-existing ID
+        }
+
 
         [TestMethod]
         public void searchConsigneeTest_type()

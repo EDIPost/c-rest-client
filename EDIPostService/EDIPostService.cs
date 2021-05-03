@@ -7,7 +7,7 @@ using System.Xml;
 using EPService = EDIPostService.ServiceConnection;
 using EPTools = EDIPostService.Tools;
 using System.Globalization;
-
+using System.Net;
 
 
 namespace EDIPostService
@@ -220,7 +220,18 @@ namespace EDIPostService
             return _buildConsignee(xml);
 
         }
-        
+
+
+        /// <summary>
+        /// Remove a consignee party ( recipient )
+        /// </summary>
+        /// <param name="consigneeId"></param>
+        public void removeConsignee(int consigneeId)
+        {
+            string url = $"/consignee/{consigneeId}";
+            sc.http_delete(url);
+        }
+
 
         /// <summary>
         /// Prints the consignment and return a BAE64 encoded representation of the PDF file
