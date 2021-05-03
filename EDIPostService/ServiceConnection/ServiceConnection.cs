@@ -156,6 +156,7 @@ namespace EDIPostService.ServiceConnection
 
                 // Set up a Request object
                 HttpWebRequest req = WebRequest.Create(url) as HttpWebRequest;
+                req.Timeout = 10000;
                 req.Headers.Add("Authorization", "Basic " + encoded);
 
 
@@ -279,6 +280,7 @@ namespace EDIPostService.ServiceConnection
 
                 // Set up a Request object
                 HttpWebRequest req = WebRequest.Create(url) as HttpWebRequest;
+                req.Timeout = 10000;
                 req.Headers.Add("Authorization", "Basic " + encoded);
 
 
@@ -355,6 +357,7 @@ namespace EDIPostService.ServiceConnection
 
                 // Set up a Request object
                 HttpWebRequest req = WebRequest.Create(url) as HttpWebRequest;
+                req.Timeout = 10000;
                 req.Method = "DELETE";
                 req.Headers.Add("Authorization", "Basic " + encoded);
 
