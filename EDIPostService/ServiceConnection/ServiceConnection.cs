@@ -183,9 +183,9 @@ namespace EDIPostService.ServiceConnection
                     }
                 }
 
-                
+
                 req.Method = method;
-                req.KeepAlive = true;
+                //req.KeepAlive = true;
 
 
                 // Handle data to be sendt
@@ -211,7 +211,7 @@ namespace EDIPostService.ServiceConnection
 
                     // Make sure we send data with correct encoding.
                     byte[] buffer = Encoding.UTF8.GetBytes(data_string);
-                    
+
                     req.ContentLength = buffer.Length;
 
                     Stream PostData = req.GetRequestStream();
@@ -223,6 +223,9 @@ namespace EDIPostService.ServiceConnection
                 HttpWebResponse webResp = (HttpWebResponse) req.GetResponse();
                 StreamReader response = new StreamReader(webResp.GetResponseStream());
                 string response_raw = response.ReadToEnd();
+
+                response.Close();
+                webResp.Close();
 
                 try
                 {
@@ -237,7 +240,7 @@ namespace EDIPostService.ServiceConnection
                     XmlElement root = xml.CreateElement("data");
                     //root.InnerText = System.Convert.ToBase64String(System.Text.Encoding.Unicode.GetBytes(response_raw));
                     root.InnerText = System.Convert.ToBase64String(System.Text.Encoding.Unicode.GetBytes(response_raw));
-                    xml.AppendChild(root);   
+                    xml.AppendChild(root);
                 }
             }
             catch (WebException e)
@@ -249,9 +252,11 @@ namespace EDIPostService.ServiceConnection
                     string responseText = response.ReadToEnd();
                     response.Close();
 
-                    throw new Exceptions.HttpException( resp.StatusDescription + " (" + (int)resp.StatusCode + ") - " + responseText );
+                    throw new Exceptions.HttpException(resp.StatusDescription + " (" + (int) resp.StatusCode + ") - " +
+                                                       responseText);
 
-                } else
+                }
+                else
                 {
                     throw e;
                 }
@@ -260,7 +265,6 @@ namespace EDIPostService.ServiceConnection
             catch (Exception e)
             {
                 throw new Exceptions.HttpException(e.Message, e);
-
             }
 
             return xml;
@@ -326,10 +330,8 @@ namespace EDIPostService.ServiceConnection
                     throw new Exceptions.HttpException(resp.StatusDescription + " (" + (int)resp.StatusCode + ") - " + responseText);
 
                 }
-                else
-                {
-                    throw e;
-                }
+
+                throw e;
 
             }
             catch (Exception e)
@@ -338,7 +340,6 @@ namespace EDIPostService.ServiceConnection
             }
 
             return data;
-
         }
 
 
@@ -348,23 +349,20 @@ namespace EDIPostService.ServiceConnection
         /// <param name="url">The partial url for the request</param>
         /// <returns>HttpStatusCode</returns>
         public HttpStatusCode http_delete(string url) {
-            String encoded = System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes("api:" + this.apikey));
+            var encoded = System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes("api:" + this.apikey));
 
             // Builds the URL
-            url = this.baseurl + url.Replace("//", "/");
+            url = baseurl + url.Replace("//", "/");
 
             try {
-
-                // Set up a Request object
                 HttpWebRequest req = WebRequest.Create(url) as HttpWebRequest;
                 req.Timeout = 10000;
                 req.Method = "DELETE";
                 req.Headers.Add("Authorization", "Basic " + encoded);
 
-
-
-                HttpWebResponse response = (HttpWebResponse)req.GetResponse();
-                return response.StatusCode;
+                using (HttpWebResponse response = (HttpWebResponse)req.GetResponse()) {
+                    return response.StatusCode;
+                }
 
 
             } catch (WebException e) {

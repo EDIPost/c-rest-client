@@ -82,14 +82,41 @@ namespace EDIPostServiceTests
 
 
         [TestMethod]
-        public void removeConsigneeTest() {
+        public void RemoveConsigneeTest() {
             EPService.EDIPostService ep = new EPService.EDIPostService(API_KEY, API_URL);
 
             // Create the consignee object
             EPClient.Consignee c = _getTestConsignee();
-            EPClient.Consignee rc = ep.createConsignee(c);
 
+            EPClient.Consignee rc = ep.createConsignee(c);
             ep.removeConsignee(rc.id);
+        }
+
+
+        /**
+         * Test if we can make 3 create, get and delete operations without causing a timeout
+         */
+        [TestMethod]
+        public void TimeoutTest() {
+            EPService.EDIPostService ep = new EPService.EDIPostService(API_KEY, API_URL);
+
+            // Create the consignee object
+            Consignee c = _getTestConsignee();
+
+            Consignee consignee1 = ep.createConsignee(c);
+            Consignee consigneeFromDb1 = ep.getConsignee(consignee1.id);
+            Assert.AreEqual(consignee1.id, consigneeFromDb1.id);
+            ep.removeConsignee(consignee1.id);
+
+            Consignee consignee2 = ep.createConsignee(c);
+            Consignee consigneeFromDb2 = ep.getConsignee(consignee2.id);
+            Assert.AreEqual(consignee2.id, consigneeFromDb2.id);
+            ep.removeConsignee(consignee2.id);
+
+            Consignee consignee3 = ep.createConsignee(c);
+            Consignee consigneeFromDb3 = ep.getConsignee(consignee3.id);
+            Assert.AreEqual(consignee3.id, consigneeFromDb3.id);
+            ep.removeConsignee(consignee3.id);
         }
 
 
